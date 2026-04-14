@@ -11,9 +11,6 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "prisma migrate reset --force"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
     "@chakra-ui/react": "3.34.0",
     "@emotion/react": "11.14.0",
