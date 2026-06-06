@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { UsersApi, type UserPublic } from "@/lib/client/api";
 import { emailRules } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
+import { useAuth } from "@/lib/client/useAuth";
 import { FormDialog } from "@/components/FormDialog";
 import { CheckboxField } from "@/components/CheckboxField";
 
@@ -29,6 +30,9 @@ export function EditUserDialog({
   open,
   onOpenChange,
 }: EditUserDialogProps) {
+  const { user: currentUser } = useAuth();
+  const isSelf = currentUser?.id === user.id;
+
   const {
     register,
     handleSubmit,
@@ -113,9 +117,19 @@ export function EditUserDialog({
         <Input {...register("full_name")} />
       </Field.Root>
 
-      <CheckboxField control={control} name="is_superuser" label="Super user" />
+      <CheckboxField
+        control={control}
+        name="is_superuser"
+        label="Super user"
+        disabled={isSelf}
+      />
 
-      <CheckboxField control={control} name="is_active" label="Active" />
+      <CheckboxField
+        control={control}
+        name="is_active"
+        label="Active"
+        disabled={isSelf}
+      />
     </FormDialog>
   );
 }

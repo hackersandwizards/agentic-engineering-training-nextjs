@@ -56,6 +56,21 @@ export const PATCH = withAuth<RouteContext>(
     }
     const { email, password, full_name, is_superuser, is_active } = parsed.data;
 
+    if (userId === user.id) {
+      if (is_superuser !== undefined && is_superuser !== true) {
+        return errorResponse(
+          403,
+          "Super users cannot remove their own superuser status",
+        );
+      }
+      if (is_active !== undefined && is_active !== true) {
+        return errorResponse(
+          403,
+          "Super users cannot deactivate their own account",
+        );
+      }
+    }
+
     const updateData: {
       email?: string;
       hashedPassword?: string;
