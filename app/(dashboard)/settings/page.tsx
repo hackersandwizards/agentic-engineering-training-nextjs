@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UsersApi } from "@/lib/client/api";
 import { useAuth } from "@/lib/client/useAuth";
 import { emailRules } from "@/lib/validation";
@@ -42,6 +42,15 @@ export default function SettingsPage() {
       full_name: user?.fullName || "",
     },
   });
+
+  useEffect(() => {
+    if (user) {
+      userInfoForm.reset({
+        email: user.email,
+        full_name: user.fullName || "",
+      });
+    }
+  }, [user, userInfoForm]);
 
   const updateUserMutation = useMutationWithInvalidation({
     invalidateKey: queryKeys.currentUser,

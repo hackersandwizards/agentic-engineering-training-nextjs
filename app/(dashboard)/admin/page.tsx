@@ -14,7 +14,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UsersApi, type UserPublic } from "@/lib/client/api";
 import { useAuth } from "@/lib/client/useAuth";
@@ -38,8 +38,13 @@ export default function AdminPage() {
     enabled: !!currentUser?.isSuperuser,
   });
 
+  useEffect(() => {
+    if (currentUser && !currentUser.isSuperuser) {
+      router.push("/");
+    }
+  }, [currentUser, router]);
+
   if (currentUser && !currentUser.isSuperuser) {
-    router.push("/");
     return null;
   }
 
