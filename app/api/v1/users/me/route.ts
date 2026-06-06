@@ -28,14 +28,6 @@ export const PATCH = withAuth(
     const updateData: { email?: string; fullName?: string } = {};
 
     if (email !== undefined) {
-      if (email !== user.email) {
-        const existingUser = await prisma.user.findUnique({
-          where: { email },
-        });
-        if (existingUser) {
-          return errorResponse(400, "Email already registered");
-        }
-      }
       updateData.email = email;
     }
 
@@ -51,7 +43,7 @@ export const PATCH = withAuth(
       return successResponse(excludePassword(updatedUser));
     } catch (error) {
       if (isUniqueConstraintError(error)) {
-        return errorResponse(409, "Email already registered");
+        return errorResponse(400, "Email already registered");
       }
       throw error;
     }

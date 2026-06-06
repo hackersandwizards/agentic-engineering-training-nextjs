@@ -41,14 +41,6 @@ export const POST = withAuth(
     }
     const { email, password, full_name, is_superuser } = parsed.data;
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser) {
-      return errorResponse(400, "The user with this email already exists");
-    }
-
     const hashedPassword = await hashPassword(password);
 
     try {
@@ -64,7 +56,7 @@ export const POST = withAuth(
       return successResponse(excludePassword(user), 201);
     } catch (error) {
       if (isUniqueConstraintError(error)) {
-        return errorResponse(409, "The user with this email already exists");
+        return errorResponse(400, "The user with this email already exists");
       }
       throw error;
     }
