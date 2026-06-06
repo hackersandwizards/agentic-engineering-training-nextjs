@@ -3,16 +3,6 @@ import { getCurrentUser } from "./auth";
 import { Prisma, type User } from "@prisma/client";
 import type { ZodType } from "zod";
 
-export class ApiError extends Error {
-  constructor(
-    public statusCode: number,
-    message: string,
-  ) {
-    super(message);
-    this.name = "ApiError";
-  }
-}
-
 export function errorResponse(
   statusCode: number,
   message: string,

@@ -74,5 +74,3 @@ export const useAuth = () => {
     resetError: () => setError(null),
   };
 };
-
-export default useAuth;
