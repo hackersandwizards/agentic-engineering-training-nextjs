@@ -1,20 +1,12 @@
 "use client";
 
-import {
-  Button,
-  Dialog,
-  Portal,
-  Field,
-  Input,
-  Stack,
-  Text,
-  Textarea,
-} from "@chakra-ui/react";
+import { Field, Input, Textarea } from "@chakra-ui/react";
 import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { ContactsApi, type Contact } from "@/lib/client/api";
 import { queryKeys } from "@/lib/client/queryKeys";
+import { FormDialog } from "@/components/FormDialog";
 
 interface EditContactFormData {
   organisation: string;
@@ -62,69 +54,41 @@ export function EditContactDialog({
   };
 
   return (
-    <Dialog.Root open={open} onOpenChange={(e) => onOpenChange(e.open)}>
-      <Portal>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content>
-            <Dialog.Header>
-              <Dialog.Title>Edit Contact</Dialog.Title>
-            </Dialog.Header>
-            <Dialog.Body>
-              <form id="edit-contact-form" onSubmit={handleSubmit(onSubmit)}>
-                <Stack gap={4}>
-                  <Field.Root invalid={!!errors.organisation}>
-                    <Field.Label>Organisation</Field.Label>
-                    <Input
-                      {...register("organisation", {
-                        required: "Organisation is required",
-                        maxLength: {
-                          value: 255,
-                          message:
-                            "Organisation must be at most 255 characters",
-                        },
-                      })}
-                      placeholder="Enter organisation name"
-                    />
-                    {errors.organisation && (
-                      <Field.ErrorText>
-                        {errors.organisation.message}
-                      </Field.ErrorText>
-                    )}
-                  </Field.Root>
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Edit Contact"
+      formId="edit-contact-form"
+      submitLabel="Save"
+      onSubmit={handleSubmit(onSubmit)}
+      isPending={mutation.isPending}
+      isError={mutation.isError}
+      error={mutation.error}
+    >
+      <Field.Root invalid={!!errors.organisation}>
+        <Field.Label>Organisation</Field.Label>
+        <Input
+          {...register("organisation", {
+            required: "Organisation is required",
+            maxLength: {
+              value: 255,
+              message: "Organisation must be at most 255 characters",
+            },
+          })}
+          placeholder="Enter organisation name"
+        />
+        {errors.organisation && (
+          <Field.ErrorText>{errors.organisation.message}</Field.ErrorText>
+        )}
+      </Field.Root>
 
-                  <Field.Root>
-                    <Field.Label>Description</Field.Label>
-                    <Textarea
-                      {...register("description")}
-                      placeholder="Enter description (optional)"
-                    />
-                  </Field.Root>
-
-                  {mutation.isError && (
-                    <Text color="red.500" fontSize="sm">
-                      {(mutation.error as Error).message}
-                    </Text>
-                  )}
-                </Stack>
-              </form>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Dialog.ActionTrigger asChild>
-                <Button variant="ghost">Cancel</Button>
-              </Dialog.ActionTrigger>
-              <Button
-                type="submit"
-                form="edit-contact-form"
-                colorScheme="blue"
-                loading={mutation.isPending}
-              >
-                Save
-              </Button>
-            </Dialog.Footer>
-          </Dialog.Content>
-        </Dialog.Positioner>
-      </Portal>
-    </Dialog.Root>
+      <Field.Root>
+        <Field.Label>Description</Field.Label>
+        <Textarea
+          {...register("description")}
+          placeholder="Enter description (optional)"
+        />
+      </Field.Root>
+    </FormDialog>
   );
 }
