@@ -3,8 +3,18 @@ import jwt, { type SignOptions } from "jsonwebtoken";
 import { Prisma } from "@prisma/client";
 import { prisma } from "./db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "TheKeyForDevModeNoIssueIfShared";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "8d";
+
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (secret) {
+    return secret;
+  }
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("JWT_SECRET must be set in production");
+  }
+  return "TheKeyForDevModeNoIssueIfShared";
+}
 
 export interface JwtPayload {
   sub: string;
@@ -33,14 +43,14 @@ export function createAccessToken(userId: string, email: string): string {
       sub: userId,
       email,
     },
-    JWT_SECRET,
+    getJwtSecret(),
     options,
   );
 }
 
 export function verifyAccessToken(token: string): JwtPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as JwtPayload;
+    return jwt.verify(token, getJwtSecret()) as JwtPayload;
   } catch {
     return null;
   }
