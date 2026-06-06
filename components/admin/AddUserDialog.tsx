@@ -10,7 +10,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 import { useForm, Controller } from "react-hook-form";
 import { useState } from "react";
 import { UsersApi } from "@/lib/client/api";
@@ -26,7 +26,6 @@ interface AddUserFormData {
 
 export function AddUserDialog() {
   const [open, setOpen] = useState(false);
-  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -37,10 +36,10 @@ export function AddUserDialog() {
     defaultValues: { is_superuser: false },
   });
 
-  const mutation = useMutation({
+  const mutation = useMutationWithInvalidation({
+    invalidateKey: queryKeys.users,
     mutationFn: (data: AddUserFormData) => UsersApi.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.users });
       setOpen(false);
       reset();
     },

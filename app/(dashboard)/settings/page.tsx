@@ -12,13 +12,14 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { UsersApi } from "@/lib/client/api";
 import { useAuth } from "@/lib/client/useAuth";
 import { validateEmail } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
+import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 
 interface UserInfoFormData {
   email: string;
@@ -33,7 +34,6 @@ interface PasswordFormData {
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
-  const queryClient = useQueryClient();
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const userInfoForm = useForm<UserInfoFormData>({
@@ -43,11 +43,9 @@ export default function SettingsPage() {
     },
   });
 
-  const updateUserMutation = useMutation({
+  const updateUserMutation = useMutationWithInvalidation({
+    invalidateKey: queryKeys.currentUser,
     mutationFn: (data: UserInfoFormData) => UsersApi.updateMe(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.currentUser });
-    },
   });
 
   const passwordForm = useForm<PasswordFormData>();

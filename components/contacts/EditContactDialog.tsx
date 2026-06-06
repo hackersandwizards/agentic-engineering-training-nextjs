@@ -10,7 +10,7 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { ContactsApi, type Contact } from "@/lib/client/api";
@@ -32,7 +32,6 @@ export function EditContactDialog({
   open,
   onOpenChange,
 }: EditContactDialogProps) {
-  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -49,11 +48,11 @@ export function EditContactDialog({
     }
   }, [open, contact, reset]);
 
-  const mutation = useMutation({
+  const mutation = useMutationWithInvalidation({
+    invalidateKey: queryKeys.contacts,
     mutationFn: (data: EditContactFormData) =>
       ContactsApi.update(contact.id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.contacts });
       onOpenChange(false);
     },
   });

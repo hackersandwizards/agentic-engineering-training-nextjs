@@ -1,9 +1,9 @@
 "use client";
 
 import { Button, Dialog, Portal, Text } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ContactsApi, type Contact } from "@/lib/client/api";
 import { queryKeys } from "@/lib/client/queryKeys";
+import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 
 interface DeleteContactDialogProps {
   contact: Contact;
@@ -16,12 +16,10 @@ export function DeleteContactDialog({
   open,
   onOpenChange,
 }: DeleteContactDialogProps) {
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
+  const mutation = useMutationWithInvalidation({
+    invalidateKey: queryKeys.contacts,
     mutationFn: () => ContactsApi.delete(contact.id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.contacts });
       onOpenChange(false);
     },
   });

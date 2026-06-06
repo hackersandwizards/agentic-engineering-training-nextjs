@@ -10,7 +10,7 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { ContactsApi } from "@/lib/client/api";
@@ -23,7 +23,6 @@ interface AddContactFormData {
 
 export function AddContactDialog() {
   const [open, setOpen] = useState(false);
-  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -31,10 +30,10 @@ export function AddContactDialog() {
     formState: { errors },
   } = useForm<AddContactFormData>();
 
-  const mutation = useMutation({
+  const mutation = useMutationWithInvalidation({
+    invalidateKey: queryKeys.contacts,
     mutationFn: (data: AddContactFormData) => ContactsApi.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.contacts });
       setOpen(false);
       reset();
     },

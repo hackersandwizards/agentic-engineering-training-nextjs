@@ -10,7 +10,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
 import { UsersApi, type UserPublic } from "@/lib/client/api";
@@ -36,7 +36,6 @@ export function EditUserDialog({
   open,
   onOpenChange,
 }: EditUserDialogProps) {
-  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -56,7 +55,8 @@ export function EditUserDialog({
     }
   }, [open, user, reset]);
 
-  const mutation = useMutation({
+  const mutation = useMutationWithInvalidation({
+    invalidateKey: queryKeys.users,
     mutationFn: (data: EditUserFormData) => {
       const updateData: Parameters<typeof UsersApi.update>[1] = {
         email: data.email,
@@ -70,7 +70,6 @@ export function EditUserDialog({
       return UsersApi.update(user.id, updateData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.users });
       onOpenChange(false);
     },
   });
