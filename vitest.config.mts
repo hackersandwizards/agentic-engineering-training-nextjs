@@ -13,7 +13,6 @@ export default defineConfig({
       exclude: [
         "node_modules/",
         ".next/",
-        "mcp-server/",
         "prisma/",
         "test/",
         "e2e/",
