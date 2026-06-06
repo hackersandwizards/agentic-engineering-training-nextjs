@@ -23,6 +23,12 @@ dist
 .eslintcache
 tsconfig.tsbuildinfo
 
+# Test
+coverage
+playwright-report
+test-results
+/.playwright
+
 # Misc
 *.log
 .DS_Store
