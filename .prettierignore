@@ -1,0 +1,24 @@
+# Tooling (not application source)
+.claude
+
+# Build output
+.next
+out
+build
+dist
+
+# Dependencies & lockfile
+node_modules
+package-lock.json
+
+# Generated
+next-env.d.ts
+
+# Database & migrations (generated SQL)
+prisma/migrations
+prisma/dev.db
+
+# Test artifacts
+coverage
+playwright-report
+test-results

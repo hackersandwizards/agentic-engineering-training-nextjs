@@ -1,6 +1,12 @@
 # Dependencies
 node_modules
 
+# Foreign package-manager lockfiles (this repo uses npm only)
+yarn.lock
+pnpm-lock.yaml
+bun.lock
+bun.lockb
+
 # Next.js
 .next
 out
