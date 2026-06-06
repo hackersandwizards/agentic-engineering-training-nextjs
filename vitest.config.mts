@@ -1,9 +1,6 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
-// Two projects so server-side code (bcryptjs, jsonwebtoken, Prisma) runs under
-// `node`, while React components run under `jsdom`. `resolve.tsconfigPaths`
-// resolves the `@/*` alias straight from tsconfig.json (native Vite support).
 export default defineConfig({
   plugins: [react()],
   resolve: { tsconfigPaths: true },

@@ -10,7 +10,6 @@ import {
   isUniqueConstraintError,
 } from "@/lib/api-utils";
 
-// GET /api/v1/users/me - Get current user
 export async function GET(request: NextRequest) {
   try {
     const result = await requireAuth(request);
@@ -25,7 +24,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PATCH /api/v1/users/me - Update current user
 export async function PATCH(request: NextRequest) {
   try {
     const result = await requireAuth(request);
@@ -49,7 +47,6 @@ export async function PATCH(request: NextRequest) {
         return errorResponse(400, "Invalid email format");
       }
 
-      // Check if email is already taken by another user
       if (email !== result.user.email) {
         const existingUser = await prisma.user.findUnique({
           where: { email },
@@ -80,7 +77,6 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// DELETE /api/v1/users/me - Delete current user
 export async function DELETE(request: NextRequest) {
   try {
     const result = await requireAuth(request);
@@ -88,7 +84,6 @@ export async function DELETE(request: NextRequest) {
       return result.error;
     }
 
-    // Superusers cannot delete themselves
     if (result.user.isSuperuser) {
       return errorResponse(
         403,

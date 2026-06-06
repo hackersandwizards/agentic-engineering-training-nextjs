@@ -102,8 +102,6 @@ export function excludePassword<T extends { hashedPassword: string }>(
   return userWithoutPassword;
 }
 
-// Prisma select for the public user shape (everything except hashedPassword),
-// so password hashes never leave the database for list/response queries.
 export const publicUserSelect = {
   id: true,
   email: true,

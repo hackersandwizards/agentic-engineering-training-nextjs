@@ -16,7 +16,6 @@ interface RouteParams {
   params: Promise<{ userId: string }>;
 }
 
-// GET /api/v1/users/[userId] - Get user by ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { userId } = await params;
@@ -25,7 +24,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return result.error;
     }
 
-    // Users can only get their own info unless they're superuser
     if (result.user.id !== userId && !result.user.isSuperuser) {
       return errorResponse(403, "The user doesn't have enough privileges");
     }
@@ -45,7 +43,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PATCH /api/v1/users/[userId] - Update user by ID (admin only)
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const { userId } = await params;
@@ -132,7 +129,6 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/v1/users/[userId] - Delete user by ID (admin only)
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { userId } = await params;
@@ -141,7 +137,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return result.error;
     }
 
-    // Cannot delete yourself
     if (result.user.id === userId) {
       return errorResponse(
         403,

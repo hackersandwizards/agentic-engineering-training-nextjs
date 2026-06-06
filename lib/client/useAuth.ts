@@ -10,8 +10,6 @@ export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  // Auth state derives from the session cookie: if /users/me succeeds the user
-  // is logged in, otherwise it returns null.
   const { data: user, isLoading: isLoadingUser } = useQuery<
     UserPublic | null,
     Error

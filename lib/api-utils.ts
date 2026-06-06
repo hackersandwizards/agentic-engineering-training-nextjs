@@ -36,8 +36,6 @@ export async function parseJsonBody<T>(
 export async function getAuthenticatedUser(
   request: NextRequest,
 ): Promise<User | null> {
-  // The web app authenticates via an httpOnly cookie; external API clients send
-  // a Bearer token. Accept either.
   const authHeader = request.headers.get("Authorization");
   const token = authHeader?.startsWith("Bearer ")
     ? authHeader.substring(7)
@@ -78,9 +76,6 @@ function parseNonNegativeInt(value: string | null, fallback: number): number {
   return Number.isInteger(parsed) && parsed >= 0 ? parsed : fallback;
 }
 
-// Returns a 403 response if the user is neither the resource owner nor a
-// superuser, otherwise null. Centralizes the ownership check used by the
-// per-resource routes.
 export function assertOwnerOrSuperuser(
   ownerId: string,
   user: User,
@@ -92,8 +87,6 @@ export function assertOwnerOrSuperuser(
   return null;
 }
 
-// True when a Prisma write failed a unique constraint (e.g. duplicate email),
-// so the route can return 409 instead of a generic 500.
 export function isUniqueConstraintError(error: unknown): boolean {
   return (
     error instanceof Prisma.PrismaClientKnownRequestError &&

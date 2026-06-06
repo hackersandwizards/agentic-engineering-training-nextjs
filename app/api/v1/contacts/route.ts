@@ -8,7 +8,6 @@ import {
   parseJsonBody,
 } from "@/lib/api-utils";
 
-// GET /api/v1/contacts - List contacts
 export async function GET(request: NextRequest) {
   try {
     const result = await requireAuth(request);
@@ -18,7 +17,6 @@ export async function GET(request: NextRequest) {
 
     const { skip, limit } = parseQueryParams(request);
 
-    // Superusers see all contacts, regular users see only their own
     const whereClause = result.user.isSuperuser
       ? {}
       : { ownerId: result.user.id };
@@ -52,7 +50,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/v1/contacts - Create a new contact
 export async function POST(request: NextRequest) {
   try {
     const result = await requireAuth(request);

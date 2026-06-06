@@ -12,7 +12,6 @@ import {
   isUniqueConstraintError,
 } from "@/lib/api-utils";
 
-// GET /api/v1/users - List all users (admin only)
 export async function GET(request: NextRequest) {
   try {
     const result = await requireSuperuser(request);
@@ -42,7 +41,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/v1/users - Create a new user (admin only)
 export async function POST(request: NextRequest) {
   try {
     const result = await requireSuperuser(request);
@@ -74,7 +72,6 @@ export async function POST(request: NextRequest) {
       return errorResponse(400, passwordError);
     }
 
-    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });

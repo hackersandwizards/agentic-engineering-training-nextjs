@@ -9,7 +9,6 @@ import {
   parseJsonBody,
 } from "@/lib/api-utils";
 
-// PATCH /api/v1/users/me/password - Change password
 export async function PATCH(request: NextRequest) {
   try {
     const result = await requireAuth(request);
@@ -33,7 +32,6 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // Verify current password
     const isCurrentPasswordValid = await verifyPassword(
       current_password,
       result.user.hashedPassword,
@@ -42,13 +40,11 @@ export async function PATCH(request: NextRequest) {
       return errorResponse(400, "Incorrect password");
     }
 
-    // Validate new password
     const passwordError = validatePassword(new_password);
     if (passwordError) {
       return errorResponse(400, passwordError);
     }
 
-    // Check that new password is different
     if (current_password === new_password) {
       return errorResponse(
         400,

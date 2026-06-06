@@ -37,7 +37,6 @@ export default function AdminPage() {
     enabled: !!currentUser?.isSuperuser,
   });
 
-  // Redirect non-superusers (after hooks)
   if (currentUser && !currentUser.isSuperuser) {
     router.push("/");
     return null;

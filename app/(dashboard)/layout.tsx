@@ -15,8 +15,6 @@ export default function DashboardLayout({
   const router = useRouter();
   const { user, isLoadingUser } = useAuth();
 
-  // Middleware redirects requests without a cookie. This also covers an expired
-  // or invalid cookie: getCurrentUser returns null, so we send them to /login.
   useEffect(() => {
     if (!isLoadingUser && !user) {
       router.push("/login");

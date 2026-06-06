@@ -12,7 +12,6 @@ interface RouteParams {
   params: Promise<{ contactId: string }>;
 }
 
-// GET /api/v1/contacts/[contactId] - Get contact by ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { contactId } = await params;
@@ -53,7 +52,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// PUT /api/v1/contacts/[contactId] - Update contact by ID
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const { contactId } = await params;
@@ -128,7 +126,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/v1/contacts/[contactId] - Delete contact by ID
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { contactId } = await params;

@@ -2,8 +2,6 @@
 
 import { Box, Container, Flex } from "@chakra-ui/react";
 
-// Redirecting authenticated users away from /login and /signup is handled by
-// middleware.ts (cookie check), so this layout only provides the shell.
 export default function AuthLayout({
   children,
 }: {

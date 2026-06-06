@@ -10,7 +10,6 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("Seeding database...");
 
-  // Create superuser
   const superuserEmail = process.env.FIRST_SUPERUSER_EMAIL || "dev@example.com";
   const superuserPassword =
     process.env.FIRST_SUPERUSER_PASSWORD || "DevPassword";
@@ -29,7 +28,6 @@ async function main() {
   });
   console.log(`Created superuser: ${superuser.email}`);
 
-  // Create test users
   const alice = await prisma.user.upsert({
     where: { email: "alice@example.com" },
     update: {},
@@ -56,7 +54,6 @@ async function main() {
   });
   console.log(`Created user: ${bob.email}`);
 
-  // Create sample contacts for superuser
   const superuserContacts = [
     { organisation: "OpenAI", description: "AI research company" },
     { organisation: "Anthropic", description: "AI safety company" },
@@ -84,7 +81,6 @@ async function main() {
   }
   console.log(`Created ${superuserContacts.length} contacts for superuser`);
 
-  // Create sample contacts for Alice
   const aliceContacts = [
     { organisation: "Acme Corp", description: "Manufacturing company" },
     { organisation: "TechStart Inc", description: "Startup accelerator" },
@@ -109,7 +105,6 @@ async function main() {
   }
   console.log(`Created ${aliceContacts.length} contacts for Alice`);
 
-  // Create sample contacts for Bob
   const bobContacts = [
     { organisation: "DataFlow Systems", description: "Data analytics" },
     { organisation: "CloudNine Hosting", description: "Cloud infrastructure" },

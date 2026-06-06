@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
     let email: string;
     let password: string;
 
-    // Handle both form data (OAuth2 spec) and JSON
     if (contentType.includes("application/x-www-form-urlencoded")) {
       const formData = await request.formData();
       email = formData.get("username") as string;
@@ -47,8 +46,6 @@ export async function POST(request: NextRequest) {
       token_type: "bearer",
       user: excludePassword(user),
     });
-    // httpOnly cookie for the web app; the body still returns the token for
-    // external API clients that send it as a Bearer header.
     authResponse.cookies.set("access_token", accessToken, {
       httpOnly: true,
       sameSite: "lax",

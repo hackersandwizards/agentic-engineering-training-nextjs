@@ -3,9 +3,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, type RenderOptions } from "@testing-library/react";
 import type { ReactElement, ReactNode } from "react";
 
-// Mirrors app/providers.tsx (Chakra + React Query) so component tests run inside
-// the same provider tree as the app. Retries are disabled and a fresh
-// QueryClient is created per render call for test isolation.
 function createTestQueryClient() {
   return new QueryClient({
     defaultOptions: {

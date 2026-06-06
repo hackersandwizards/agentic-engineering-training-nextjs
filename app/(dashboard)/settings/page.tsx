@@ -34,7 +34,6 @@ export default function SettingsPage() {
   const queryClient = useQueryClient();
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  // User Info Form
   const userInfoForm = useForm<UserInfoFormData>({
     defaultValues: {
       email: user?.email || "",
@@ -49,7 +48,6 @@ export default function SettingsPage() {
     },
   });
 
-  // Password Form
   const passwordForm = useForm<PasswordFormData>();
 
   const changePasswordMutation = useMutation({
@@ -60,7 +58,6 @@ export default function SettingsPage() {
     },
   });
 
-  // Delete Account
   const deleteAccountMutation = useMutation({
     mutationFn: () => UsersApi.deleteMe(),
     onSuccess: () => {

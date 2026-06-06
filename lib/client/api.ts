@@ -49,9 +49,6 @@ async function handleResponse<T>(response: Response): Promise<T> {
   return response.json();
 }
 
-// Shared JSON request: serializes the body and unwraps errors. Auth rides on
-// the httpOnly cookie, sent automatically with same-origin requests. Endpoints
-// that need a non-JSON body (login) build their own request.
 async function apiRequest<T>(
   endpoint: string,
   options: { method?: string; body?: unknown } = {},
@@ -65,10 +62,8 @@ async function apiRequest<T>(
   return handleResponse<T>(response);
 }
 
-// Auth API
 export const AuthApi = {
   async login(email: string, password: string): Promise<LoginResponse> {
-    // OAuth2 password flow expects form-encoded credentials.
     const formData = new URLSearchParams();
     formData.append("username", email);
     formData.append("password", password);
@@ -91,7 +86,6 @@ export const AuthApi = {
   },
 };
 
-// Users API
 export const UsersApi = {
   getMe(): Promise<UserPublic> {
     return apiRequest<UserPublic>("/users/me");
@@ -166,7 +160,6 @@ export const UsersApi = {
   },
 };
 
-// Contacts API
 export const ContactsApi = {
   list(skip = 0, limit = 100): Promise<PaginatedResponse<Contact>> {
     return apiRequest<PaginatedResponse<Contact>>(
