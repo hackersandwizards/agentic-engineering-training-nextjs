@@ -8,6 +8,7 @@ import {
   parseQueryParams,
   validateEmail,
   validatePassword,
+  parseJsonBody,
 } from "@/lib/api-utils";
 
 // GET /api/v1/users - List all users (admin only)
@@ -47,8 +48,16 @@ export async function POST(request: NextRequest) {
       return result.error;
     }
 
-    const body = await request.json();
-    const { email, password, full_name, is_superuser } = body;
+    const parsed = await parseJsonBody<{
+      email?: string;
+      password?: string;
+      full_name?: string;
+      is_superuser?: boolean;
+    }>(request);
+    if ("error" in parsed) {
+      return parsed.error;
+    }
+    const { email, password, full_name, is_superuser } = parsed.data;
 
     if (!email || !password) {
       return errorResponse(400, "Email and password are required");
@@ -80,7 +89,7 @@ export async function POST(request: NextRequest) {
         hashedPassword,
         fullName: full_name || null,
         isActive: true,
-        isSuperuser: is_superuser || false,
+        isSuperuser: is_superuser === true,
       },
     });
 

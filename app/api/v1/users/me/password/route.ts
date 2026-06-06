@@ -6,6 +6,7 @@ import {
   errorResponse,
   successResponse,
   validatePassword,
+  parseJsonBody,
 } from "@/lib/api-utils";
 
 // PATCH /api/v1/users/me/password - Change password
@@ -16,8 +17,14 @@ export async function PATCH(request: NextRequest) {
       return result.error;
     }
 
-    const body = await request.json();
-    const { current_password, new_password } = body;
+    const parsed = await parseJsonBody<{
+      current_password?: string;
+      new_password?: string;
+    }>(request);
+    if ("error" in parsed) {
+      return parsed.error;
+    }
+    const { current_password, new_password } = parsed.data;
 
     if (!current_password || !new_password) {
       return errorResponse(

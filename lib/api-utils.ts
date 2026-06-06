@@ -23,6 +23,16 @@ export function successResponse<T>(data: T, statusCode = 200): NextResponse {
   return NextResponse.json(data, { status: statusCode });
 }
 
+export async function parseJsonBody<T>(
+  request: NextRequest,
+): Promise<{ data: T } | { error: NextResponse }> {
+  try {
+    return { data: (await request.json()) as T };
+  } catch {
+    return { error: errorResponse(400, "Invalid JSON body") };
+  }
+}
+
 export async function getAuthenticatedUser(
   request: NextRequest,
 ): Promise<User | null> {
@@ -60,10 +70,15 @@ export async function requireSuperuser(
   return result;
 }
 
+function parseNonNegativeInt(value: string | null, fallback: number): number {
+  const parsed = Number.parseInt(value ?? "", 10);
+  return Number.isInteger(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
 export function parseQueryParams(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const skip = parseInt(searchParams.get("skip") || "0", 10);
-  const limit = parseInt(searchParams.get("limit") || "100", 10);
+  const skip = parseNonNegativeInt(searchParams.get("skip"), 0);
+  const limit = parseNonNegativeInt(searchParams.get("limit"), 100);
   return { skip, limit: Math.min(limit, 100) };
 }
 

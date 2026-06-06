@@ -6,12 +6,20 @@ import {
   successResponse,
   validateEmail,
   validatePassword,
+  parseJsonBody,
 } from "@/lib/api-utils";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { email, password, full_name } = body;
+    const parsed = await parseJsonBody<{
+      email?: string;
+      password?: string;
+      full_name?: string;
+    }>(request);
+    if ("error" in parsed) {
+      return parsed.error;
+    }
+    const { email, password, full_name } = parsed.data;
 
     if (!email || !password) {
       return errorResponse(400, "Email and password are required");

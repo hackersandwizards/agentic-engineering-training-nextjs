@@ -8,6 +8,7 @@ import {
   successResponse,
   validateEmail,
   validatePassword,
+  parseJsonBody,
 } from "@/lib/api-utils";
 
 interface RouteParams {
@@ -60,8 +61,17 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return errorResponse(404, "User not found");
     }
 
-    const body = await request.json();
-    const { email, password, full_name, is_superuser, is_active } = body;
+    const parsed = await parseJsonBody<{
+      email?: string;
+      password?: string;
+      full_name?: string;
+      is_superuser?: boolean;
+      is_active?: boolean;
+    }>(request);
+    if ("error" in parsed) {
+      return parsed.error;
+    }
+    const { email, password, full_name, is_superuser, is_active } = parsed.data;
 
     const updateData: {
       email?: string;
@@ -99,11 +109,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     }
 
     if (is_superuser !== undefined) {
-      updateData.isSuperuser = is_superuser;
+      updateData.isSuperuser = is_superuser === true;
     }
 
     if (is_active !== undefined) {
-      updateData.isActive = is_active;
+      updateData.isActive = is_active === true;
     }
 
     const updatedUser = await prisma.user.update({

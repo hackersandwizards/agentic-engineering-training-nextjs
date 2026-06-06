@@ -5,6 +5,7 @@ import {
   errorResponse,
   successResponse,
   parseQueryParams,
+  parseJsonBody,
 } from "@/lib/api-utils";
 
 // GET /api/v1/contacts - List contacts
@@ -59,8 +60,14 @@ export async function POST(request: NextRequest) {
       return result.error;
     }
 
-    const body = await request.json();
-    const { organisation, description } = body;
+    const parsed = await parseJsonBody<{
+      organisation?: string;
+      description?: string;
+    }>(request);
+    if ("error" in parsed) {
+      return parsed.error;
+    }
+    const { organisation, description } = parsed.data;
 
     if (!organisation) {
       return errorResponse(400, "Organisation is required");

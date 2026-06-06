@@ -6,6 +6,7 @@ import {
   errorResponse,
   successResponse,
   validateEmail,
+  parseJsonBody,
 } from "@/lib/api-utils";
 
 // GET /api/v1/users/me - Get current user
@@ -31,8 +32,14 @@ export async function PATCH(request: NextRequest) {
       return result.error;
     }
 
-    const body = await request.json();
-    const { email, full_name } = body;
+    const parsed = await parseJsonBody<{
+      email?: string;
+      full_name?: string;
+    }>(request);
+    if ("error" in parsed) {
+      return parsed.error;
+    }
+    const { email, full_name } = parsed.data;
 
     const updateData: { email?: string; fullName?: string } = {};
 

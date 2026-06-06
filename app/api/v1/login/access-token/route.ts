@@ -4,7 +4,7 @@ import {
   createAccessToken,
   excludePassword,
 } from "@/lib/auth";
-import { errorResponse } from "@/lib/api-utils";
+import { errorResponse, parseJsonBody } from "@/lib/api-utils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,9 +19,16 @@ export async function POST(request: NextRequest) {
       email = formData.get("username") as string;
       password = formData.get("password") as string;
     } else {
-      const body = await request.json();
-      email = body.username || body.email;
-      password = body.password;
+      const parsed = await parseJsonBody<{
+        username?: string;
+        email?: string;
+        password?: string;
+      }>(request);
+      if ("error" in parsed) {
+        return parsed.error;
+      }
+      email = parsed.data.username || parsed.data.email || "";
+      password = parsed.data.password || "";
     }
 
     if (!email || !password) {

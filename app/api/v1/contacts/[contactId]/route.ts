@@ -1,6 +1,11 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, errorResponse, successResponse } from "@/lib/api-utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+  parseJsonBody,
+} from "@/lib/api-utils";
 
 interface RouteParams {
   params: Promise<{ contactId: string }>;
@@ -66,8 +71,14 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return errorResponse(403, "Not enough permissions");
     }
 
-    const body = await request.json();
-    const { organisation, description } = body;
+    const parsed = await parseJsonBody<{
+      organisation?: string;
+      description?: string;
+    }>(request);
+    if ("error" in parsed) {
+      return parsed.error;
+    }
+    const { organisation, description } = parsed.data;
 
     const updateData: { organisation?: string; description?: string | null } =
       {};
