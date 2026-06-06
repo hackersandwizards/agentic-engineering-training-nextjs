@@ -8,6 +8,7 @@ import {
   validatePassword,
   parseJsonBody,
   isUniqueConstraintError,
+  assertOwnerOrSuperuser,
 } from "@/lib/api-utils";
 
 type RouteContext = { params: Promise<{ userId: string }> };
@@ -16,8 +17,13 @@ export const GET = withAuth<RouteContext>(
   async (request, user, { params }) => {
     const { userId } = await params;
 
-    if (user.id !== userId && !user.isSuperuser) {
-      return errorResponse(403, "The user doesn't have enough privileges");
+    const permissionError = assertOwnerOrSuperuser(
+      userId,
+      user,
+      "The user doesn't have enough privileges",
+    );
+    if (permissionError) {
+      return permissionError;
     }
 
     const target = await prisma.user.findUnique({

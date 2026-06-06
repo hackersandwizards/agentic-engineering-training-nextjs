@@ -33,7 +33,7 @@ export async function parseJsonBody<T>(
   }
 }
 
-export async function getAuthenticatedUser(
+async function getAuthenticatedUser(
   request: NextRequest,
 ): Promise<User | null> {
   const authHeader = request.headers.get("Authorization");
@@ -46,7 +46,7 @@ export async function getAuthenticatedUser(
   return getCurrentUser(token);
 }
 
-export async function requireAuth(
+async function requireAuth(
   request: NextRequest,
 ): Promise<{ user: User } | { error: NextResponse }> {
   const user = await getAuthenticatedUser(request);
@@ -56,7 +56,7 @@ export async function requireAuth(
   return { user };
 }
 
-export async function requireSuperuser(
+async function requireSuperuser(
   request: NextRequest,
 ): Promise<{ user: User } | { error: NextResponse }> {
   const result = await requireAuth(request);

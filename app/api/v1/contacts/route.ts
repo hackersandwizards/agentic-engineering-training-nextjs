@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
+import { contactOwnerInclude } from "@/lib/auth";
 import {
   withAuth,
   errorResponse,
@@ -20,15 +21,7 @@ export const GET = withAuth(
         skip,
         take: limit,
         orderBy: { createdAt: "desc" },
-        include: {
-          owner: {
-            select: {
-              id: true,
-              email: true,
-              fullName: true,
-            },
-          },
-        },
+        include: contactOwnerInclude,
       }),
       prisma.contact.count({ where: whereClause }),
     ]);
@@ -66,15 +59,7 @@ export const POST = withAuth(
         description: description || null,
         ownerId: user.id,
       },
-      include: {
-        owner: {
-          select: {
-            id: true,
-            email: true,
-            fullName: true,
-          },
-        },
-      },
+      include: contactOwnerInclude,
     });
 
     return successResponse(contact, 201);

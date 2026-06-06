@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { contactOwnerInclude } from "@/lib/auth";
 import {
   withAuth,
   errorResponse,
@@ -15,15 +16,7 @@ export const GET = withAuth<RouteContext>(
 
     const contact = await prisma.contact.findUnique({
       where: { id: contactId },
-      include: {
-        owner: {
-          select: {
-            id: true,
-            email: true,
-            fullName: true,
-          },
-        },
-      },
+      include: contactOwnerInclude,
     });
 
     if (!contact) {
@@ -89,15 +82,7 @@ export const PUT = withAuth<RouteContext>(
     const updatedContact = await prisma.contact.update({
       where: { id: contactId },
       data: updateData,
-      include: {
-        owner: {
-          select: {
-            id: true,
-            email: true,
-            fullName: true,
-          },
-        },
-      },
+      include: contactOwnerInclude,
     });
 
     return successResponse(updatedContact);

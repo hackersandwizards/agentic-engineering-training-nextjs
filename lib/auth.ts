@@ -84,16 +84,6 @@ export async function getCurrentUser(token: string) {
   return user;
 }
 
-export type UserWithoutPassword = {
-  id: string;
-  email: string;
-  fullName: string | null;
-  isActive: boolean;
-  isSuperuser: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
 export function excludePassword<T extends { hashedPassword: string }>(
   user: T,
 ): Omit<T, "hashedPassword"> {
@@ -111,3 +101,7 @@ export const publicUserSelect = {
   createdAt: true,
   updatedAt: true,
 } satisfies Prisma.UserSelect;
+
+export const contactOwnerInclude = {
+  owner: { select: { id: true, email: true, fullName: true } },
+} satisfies Prisma.ContactInclude;
