@@ -1,6 +1,6 @@
 ---
 name: build-pipeline
-description: Scaffold one stage of a multi-step pipeline: a per-stage subagent (with a SubagentStop gate), a manual launcher skill, and a dynamic-workflow script that orchestrates the stages deterministically. Run once per step you want to add.
+description: "Scaffold one stage of a multi-step pipeline: a per-stage subagent (with a SubagentStop gate), a manual launcher skill, and a dynamic-workflow script that orchestrates the stages deterministically. Run once per step you want to add."
 argument-hint: "<pipeline> <order> <step>: role / models / tools / check"
 model: haiku
 effort: low

@@ -1,6 +1,6 @@
 ---
 name: build-pipeline
-description: Generator worker for the build-pipeline skill. Scaffolds one stage of a multi-step pipeline: a per-stage subagent with a SubagentStop gate, a manual launcher skill, and a dynamic-workflow script.
+description: "Generator worker for the build-pipeline skill. Scaffolds one stage of a multi-step pipeline: a per-stage subagent with a SubagentStop gate, a manual launcher skill, and a dynamic-workflow script."
 model: opus
 effort: xhigh
 tools: Read, Write, Edit, Glob
