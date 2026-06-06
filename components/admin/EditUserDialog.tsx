@@ -5,7 +5,7 @@ import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalid
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { UsersApi, type UserPublic } from "@/lib/client/api";
-import { emailRules } from "@/lib/validation";
+import { emailRules, optionalPasswordRules } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
 import { useAuth } from "@/lib/client/useAuth";
 import { FormDialog } from "@/components/FormDialog";
@@ -99,12 +99,7 @@ export function EditUserDialog({
         <Field.Label>New Password (leave blank to keep)</Field.Label>
         <Input
           type="password"
-          {...register("password", {
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters",
-            },
-          })}
+          {...register("password", optionalPasswordRules)}
           placeholder="Enter new password"
         />
         {errors.password && (

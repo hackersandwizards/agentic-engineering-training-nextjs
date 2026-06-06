@@ -20,3 +20,13 @@ export const emailRules = {
   required: "Email is required",
   validate: (value: string) => validateEmail(value) || "Invalid email address",
 };
+
+export const passwordRules = {
+  required: "Password is required",
+  validate: (value: string) => validatePassword(value) ?? true,
+};
+
+export const optionalPasswordRules = {
+  validate: (value: string | undefined) =>
+    !value || (validatePassword(value) ?? true),
+};

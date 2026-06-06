@@ -5,7 +5,7 @@ import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalid
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { UsersApi } from "@/lib/client/api";
-import { emailRules } from "@/lib/validation";
+import { emailRules, passwordRules } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
 import { FormDialog } from "@/components/FormDialog";
 import { CheckboxField } from "@/components/CheckboxField";
@@ -71,13 +71,7 @@ export function AddUserDialog() {
         <Field.Label>Password</Field.Label>
         <Input
           type="password"
-          {...register("password", {
-            required: "Password is required",
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters",
-            },
-          })}
+          {...register("password", passwordRules)}
           placeholder="Enter password"
         />
         {errors.password && (

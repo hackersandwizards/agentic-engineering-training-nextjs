@@ -31,17 +31,7 @@ export const userCreateSchema = z.object({
   is_superuser: z.unknown().optional(),
 });
 
-export const signupSchema = z.object({
-  email: z
-    .string({ error: "Email and password are required" })
-    .min(1, "Email and password are required")
-    .refine(validateEmail, "Invalid email format"),
-  password: z
-    .string({ error: "Email and password are required" })
-    .min(1, "Email and password are required")
-    .pipe(passwordSchema),
-  full_name: z.string().optional(),
-});
+export const signupSchema = userCreateSchema.omit({ is_superuser: true });
 
 export const userUpdateSchema = z.object({
   email: z

@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { UsersApi } from "@/lib/client/api";
 import { useAuth } from "@/lib/client/useAuth";
-import { emailRules } from "@/lib/validation";
+import { emailRules, passwordRules } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
 import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 
@@ -168,13 +168,7 @@ export default function SettingsPage() {
                     <Field.Label>New Password</Field.Label>
                     <Input
                       type="password"
-                      {...passwordForm.register("new_password", {
-                        required: "New password is required",
-                        minLength: {
-                          value: 8,
-                          message: "Password must be at least 8 characters",
-                        },
-                      })}
+                      {...passwordForm.register("new_password", passwordRules)}
                     />
                     {passwordForm.formState.errors.new_password && (
                       <Field.ErrorText>

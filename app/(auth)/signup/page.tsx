@@ -13,7 +13,7 @@ import {
 import { useForm } from "react-hook-form";
 import NextLink from "next/link";
 import { useAuth } from "@/lib/client/useAuth";
-import { emailRules } from "@/lib/validation";
+import { emailRules, passwordRules } from "@/lib/validation";
 
 interface SignupFormData {
   email: string;
@@ -78,13 +78,7 @@ export default function SignupPage() {
               <Input
                 type="password"
                 placeholder="Enter your password"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 8,
-                    message: "Password must be at least 8 characters",
-                  },
-                })}
+                {...register("password", passwordRules)}
               />
               {errors.password && (
                 <Field.ErrorText>{errors.password.message}</Field.ErrorText>
