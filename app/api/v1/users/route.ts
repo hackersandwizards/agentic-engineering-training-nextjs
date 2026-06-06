@@ -6,11 +6,10 @@ import {
   errorResponse,
   successResponse,
   parseQueryParams,
-  validateEmail,
-  validatePassword,
-  parseJsonBody,
+  parseBody,
   isUniqueConstraintError,
 } from "@/lib/api-utils";
+import { userCreateSchema } from "@/lib/schemas";
 
 export const GET = withAuth(
   async (request: NextRequest) => {
@@ -36,29 +35,11 @@ export const GET = withAuth(
 
 export const POST = withAuth(
   async (request: NextRequest) => {
-    const parsed = await parseJsonBody<{
-      email?: string;
-      password?: string;
-      full_name?: string;
-      is_superuser?: boolean;
-    }>(request);
+    const parsed = await parseBody(request, userCreateSchema);
     if ("error" in parsed) {
       return parsed.error;
     }
     const { email, password, full_name, is_superuser } = parsed.data;
-
-    if (!email || !password) {
-      return errorResponse(400, "Email and password are required");
-    }
-
-    if (!validateEmail(email)) {
-      return errorResponse(400, "Invalid email format");
-    }
-
-    const passwordError = validatePassword(password);
-    if (passwordError) {
-      return errorResponse(400, passwordError);
-    }
 
     const existingUser = await prisma.user.findUnique({
       where: { email },

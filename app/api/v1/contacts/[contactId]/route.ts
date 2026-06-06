@@ -4,9 +4,10 @@ import {
   withAuth,
   errorResponse,
   successResponse,
-  parseJsonBody,
+  parseBody,
   assertOwnerOrSuperuser,
 } from "@/lib/api-utils";
+import { contactUpdateSchema } from "@/lib/schemas";
 
 type RouteContext = { params: Promise<{ contactId: string }> };
 
@@ -50,10 +51,7 @@ export const PUT = withAuth<RouteContext>(
       return permissionError;
     }
 
-    const parsed = await parseJsonBody<{
-      organisation?: string;
-      description?: string;
-    }>(request);
+    const parsed = await parseBody(request, contactUpdateSchema);
     if ("error" in parsed) {
       return parsed.error;
     }
@@ -63,15 +61,6 @@ export const PUT = withAuth<RouteContext>(
       {};
 
     if (organisation !== undefined) {
-      if (!organisation) {
-        return errorResponse(400, "Organisation cannot be empty");
-      }
-      if (organisation.length > 255) {
-        return errorResponse(
-          400,
-          "Organisation must be at most 255 characters",
-        );
-      }
       updateData.organisation = organisation;
     }
 

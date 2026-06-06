@@ -4,36 +4,18 @@ import { hashPassword, excludePassword } from "@/lib/auth";
 import {
   errorResponse,
   successResponse,
-  validateEmail,
-  validatePassword,
-  parseJsonBody,
+  parseBody,
   isUniqueConstraintError,
 } from "@/lib/api-utils";
+import { signupSchema } from "@/lib/schemas";
 
 export async function POST(request: NextRequest) {
   try {
-    const parsed = await parseJsonBody<{
-      email?: string;
-      password?: string;
-      full_name?: string;
-    }>(request);
+    const parsed = await parseBody(request, signupSchema);
     if ("error" in parsed) {
       return parsed.error;
     }
     const { email, password, full_name } = parsed.data;
-
-    if (!email || !password) {
-      return errorResponse(400, "Email and password are required");
-    }
-
-    if (!validateEmail(email)) {
-      return errorResponse(400, "Invalid email format");
-    }
-
-    const passwordError = validatePassword(password);
-    if (passwordError) {
-      return errorResponse(400, passwordError);
-    }
 
     const existingUser = await prisma.user.findUnique({
       where: { email },

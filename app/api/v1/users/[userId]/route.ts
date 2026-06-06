@@ -4,12 +4,11 @@ import {
   withAuth,
   errorResponse,
   successResponse,
-  validateEmail,
-  validatePassword,
-  parseJsonBody,
+  parseBody,
   isUniqueConstraintError,
   assertOwnerOrSuperuser,
 } from "@/lib/api-utils";
+import { userUpdateSchema } from "@/lib/schemas";
 
 type RouteContext = { params: Promise<{ userId: string }> };
 
@@ -51,13 +50,7 @@ export const PATCH = withAuth<RouteContext>(
       return errorResponse(404, "User not found");
     }
 
-    const parsed = await parseJsonBody<{
-      email?: string;
-      password?: string;
-      full_name?: string;
-      is_superuser?: boolean;
-      is_active?: boolean;
-    }>(request);
+    const parsed = await parseBody(request, userUpdateSchema);
     if ("error" in parsed) {
       return parsed.error;
     }
@@ -72,9 +65,6 @@ export const PATCH = withAuth<RouteContext>(
     } = {};
 
     if (email !== undefined) {
-      if (!validateEmail(email)) {
-        return errorResponse(400, "Invalid email format");
-      }
       if (email !== target.email) {
         const existingUser = await prisma.user.findUnique({
           where: { email },
@@ -87,10 +77,6 @@ export const PATCH = withAuth<RouteContext>(
     }
 
     if (password !== undefined) {
-      const passwordError = validatePassword(password);
-      if (passwordError) {
-        return errorResponse(400, passwordError);
-      }
       updateData.hashedPassword = await hashPassword(password);
     }
 

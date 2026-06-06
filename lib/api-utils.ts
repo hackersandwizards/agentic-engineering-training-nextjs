@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "./auth";
 import { Prisma, type User } from "@prisma/client";
+import type { ZodType } from "zod";
 
 export class ApiError extends Error {
   constructor(
@@ -31,6 +32,22 @@ export async function parseJsonBody<T>(
   } catch {
     return { error: errorResponse(400, "Invalid JSON body") };
   }
+}
+
+export async function parseBody<T>(
+  request: NextRequest,
+  schema: ZodType<T>,
+): Promise<{ data: T } | { error: NextResponse }> {
+  const parsed = await parseJsonBody<unknown>(request);
+  if ("error" in parsed) {
+    return parsed;
+  }
+  const result = schema.safeParse(parsed.data);
+  if (!result.success) {
+    const message = result.error.issues[0]?.message ?? "Invalid request body";
+    return { error: errorResponse(400, message) };
+  }
+  return { data: result.data };
 }
 
 async function getAuthenticatedUser(
@@ -126,5 +143,3 @@ export function withAuth<C extends RouteContext = RouteContext>(
     }
   };
 }
-
-export { validateEmail, validatePassword } from "./validation";

@@ -3,11 +3,11 @@ import { prisma } from "@/lib/db";
 import { contactOwnerInclude } from "@/lib/auth";
 import {
   withAuth,
-  errorResponse,
   successResponse,
   parseQueryParams,
-  parseJsonBody,
+  parseBody,
 } from "@/lib/api-utils";
+import { contactCreateSchema } from "@/lib/schemas";
 
 export const GET = withAuth(
   async (request: NextRequest, user) => {
@@ -36,22 +36,11 @@ export const GET = withAuth(
 
 export const POST = withAuth(
   async (request: NextRequest, user) => {
-    const parsed = await parseJsonBody<{
-      organisation?: string;
-      description?: string;
-    }>(request);
+    const parsed = await parseBody(request, contactCreateSchema);
     if ("error" in parsed) {
       return parsed.error;
     }
     const { organisation, description } = parsed.data;
-
-    if (!organisation) {
-      return errorResponse(400, "Organisation is required");
-    }
-
-    if (organisation.length > 255) {
-      return errorResponse(400, "Organisation must be at most 255 characters");
-    }
 
     const contact = await prisma.contact.create({
       data: {

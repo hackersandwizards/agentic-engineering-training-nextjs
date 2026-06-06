@@ -5,27 +5,18 @@ import {
   withAuth,
   errorResponse,
   successResponse,
-  validatePassword,
-  parseJsonBody,
+  parseBody,
 } from "@/lib/api-utils";
+import { validatePassword } from "@/lib/validation";
+import { passwordChangeSchema } from "@/lib/schemas";
 
 export const PATCH = withAuth(
   async (request: NextRequest, user) => {
-    const parsed = await parseJsonBody<{
-      current_password?: string;
-      new_password?: string;
-    }>(request);
+    const parsed = await parseBody(request, passwordChangeSchema);
     if ("error" in parsed) {
       return parsed.error;
     }
     const { current_password, new_password } = parsed.data;
-
-    if (!current_password || !new_password) {
-      return errorResponse(
-        400,
-        "Current password and new password are required",
-      );
-    }
 
     const isCurrentPasswordValid = await verifyPassword(
       current_password,

@@ -5,10 +5,10 @@ import {
   withAuth,
   errorResponse,
   successResponse,
-  validateEmail,
-  parseJsonBody,
+  parseBody,
   isUniqueConstraintError,
 } from "@/lib/api-utils";
+import { userUpdateMeSchema } from "@/lib/schemas";
 
 export const GET = withAuth(
   async (request: NextRequest, user) => {
@@ -19,10 +19,7 @@ export const GET = withAuth(
 
 export const PATCH = withAuth(
   async (request: NextRequest, user) => {
-    const parsed = await parseJsonBody<{
-      email?: string;
-      full_name?: string;
-    }>(request);
+    const parsed = await parseBody(request, userUpdateMeSchema);
     if ("error" in parsed) {
       return parsed.error;
     }
@@ -31,10 +28,6 @@ export const PATCH = withAuth(
     const updateData: { email?: string; fullName?: string } = {};
 
     if (email !== undefined) {
-      if (!validateEmail(email)) {
-        return errorResponse(400, "Invalid email format");
-      }
-
       if (email !== user.email) {
         const existingUser = await prisma.user.findUnique({
           where: { email },
