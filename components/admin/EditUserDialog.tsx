@@ -15,6 +15,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
 import { UsersApi, type UserPublic } from "@/lib/client/api";
 import { validateEmail } from "@/lib/validation";
+import { queryKeys } from "@/lib/client/queryKeys";
 
 interface EditUserFormData {
   email: string;
@@ -69,7 +70,7 @@ export function EditUserDialog({
       return UsersApi.update(user.id, updateData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users });
       onOpenChange(false);
     },
   });

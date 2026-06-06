@@ -21,6 +21,7 @@ import { useAuth } from "@/lib/client/useAuth";
 import { AddUserDialog } from "@/components/admin/AddUserDialog";
 import { EditUserDialog } from "@/components/admin/EditUserDialog";
 import { DeleteUserDialog } from "@/components/admin/DeleteUserDialog";
+import { queryKeys } from "@/lib/client/queryKeys";
 
 const PAGE_SIZE = 5;
 
@@ -32,7 +33,7 @@ export default function AdminPage() {
   const [deleteUser, setDeleteUser] = useState<UserPublic | null>(null);
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["users", page],
+    queryKey: queryKeys.usersPage(page),
     queryFn: () => UsersApi.list(page * PAGE_SIZE, PAGE_SIZE),
     enabled: !!currentUser?.isSuperuser,
   });

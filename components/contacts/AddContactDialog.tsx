@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { ContactsApi } from "@/lib/client/api";
+import { queryKeys } from "@/lib/client/queryKeys";
 
 interface AddContactFormData {
   organisation: string;
@@ -33,7 +34,7 @@ export function AddContactDialog() {
   const mutation = useMutation({
     mutationFn: (data: AddContactFormData) => ContactsApi.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["contacts"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.contacts });
       setOpen(false);
       reset();
     },

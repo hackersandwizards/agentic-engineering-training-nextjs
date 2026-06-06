@@ -18,6 +18,7 @@ import { ContactsApi, type Contact } from "@/lib/client/api";
 import { AddContactDialog } from "@/components/contacts/AddContactDialog";
 import { EditContactDialog } from "@/components/contacts/EditContactDialog";
 import { DeleteContactDialog } from "@/components/contacts/DeleteContactDialog";
+import { queryKeys } from "@/lib/client/queryKeys";
 
 const PAGE_SIZE = 5;
 
@@ -27,7 +28,7 @@ export default function ContactsPage() {
   const [deleteContact, setDeleteContact] = useState<Contact | null>(null);
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["contacts", page],
+    queryKey: queryKeys.contactsPage(page),
     queryFn: () => ContactsApi.list(page * PAGE_SIZE, PAGE_SIZE),
   });
 

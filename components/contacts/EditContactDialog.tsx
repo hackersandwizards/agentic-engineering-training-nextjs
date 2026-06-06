@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { ContactsApi, type Contact } from "@/lib/client/api";
+import { queryKeys } from "@/lib/client/queryKeys";
 
 interface EditContactFormData {
   organisation: string;
@@ -52,7 +53,7 @@ export function EditContactDialog({
     mutationFn: (data: EditContactFormData) =>
       ContactsApi.update(contact.id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["contacts"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.contacts });
       onOpenChange(false);
     },
   });

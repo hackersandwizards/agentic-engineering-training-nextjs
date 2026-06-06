@@ -18,6 +18,7 @@ import { useState } from "react";
 import { UsersApi } from "@/lib/client/api";
 import { useAuth } from "@/lib/client/useAuth";
 import { validateEmail } from "@/lib/validation";
+import { queryKeys } from "@/lib/client/queryKeys";
 
 interface UserInfoFormData {
   email: string;
@@ -45,7 +46,7 @@ export default function SettingsPage() {
   const updateUserMutation = useMutation({
     mutationFn: (data: UserInfoFormData) => UsersApi.updateMe(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.currentUser });
     },
   });
 

@@ -3,6 +3,7 @@
 import { Button, Dialog, Portal, Text } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UsersApi, type UserPublic } from "@/lib/client/api";
+import { queryKeys } from "@/lib/client/queryKeys";
 
 interface DeleteUserDialogProps {
   user: UserPublic;
@@ -20,7 +21,7 @@ export function DeleteUserDialog({
   const mutation = useMutation({
     mutationFn: () => UsersApi.delete(user.id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users });
       onOpenChange(false);
     },
   });

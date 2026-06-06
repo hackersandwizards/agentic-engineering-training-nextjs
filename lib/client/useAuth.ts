@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthApi, UsersApi, type UserPublic } from "./api";
+import { queryKeys } from "./queryKeys";
 
 export const useAuth = () => {
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +15,7 @@ export const useAuth = () => {
     UserPublic | null,
     Error
   >({
-    queryKey: ["currentUser"],
+    queryKey: queryKeys.currentUser,
     queryFn: async () => {
       try {
         return await UsersApi.getMe();
@@ -38,7 +39,7 @@ export const useAuth = () => {
       setError(err.message);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users });
     },
   });
 
@@ -46,7 +47,7 @@ export const useAuth = () => {
     mutationFn: (data: { email: string; password: string }) =>
       AuthApi.login(data.email, data.password),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.currentUser });
       router.push("/");
     },
     onError: (err: Error) => {

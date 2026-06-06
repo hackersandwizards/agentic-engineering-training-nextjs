@@ -15,6 +15,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useState } from "react";
 import { UsersApi } from "@/lib/client/api";
 import { validateEmail } from "@/lib/validation";
+import { queryKeys } from "@/lib/client/queryKeys";
 
 interface AddUserFormData {
   email: string;
@@ -39,7 +40,7 @@ export function AddUserDialog() {
   const mutation = useMutation({
     mutationFn: (data: AddUserFormData) => UsersApi.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users });
       setOpen(false);
       reset();
     },
