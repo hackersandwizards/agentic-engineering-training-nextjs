@@ -5,31 +5,25 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthApi, UsersApi, type UserPublic } from "./api";
 
-export const isLoggedIn = () => {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem("access_token") !== null;
-};
-
 export const useAuth = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  // Auth state derives from the session cookie: if /users/me succeeds the user
+  // is logged in, otherwise it returns null.
   const { data: user, isLoading: isLoadingUser } = useQuery<
     UserPublic | null,
     Error
   >({
     queryKey: ["currentUser"],
     queryFn: async () => {
-      if (!isLoggedIn()) return null;
       try {
         return await UsersApi.getMe();
       } catch {
-        localStorage.removeItem("access_token");
         return null;
       }
     },
-    enabled: typeof window !== "undefined",
     retry: false,
   });
 
@@ -51,11 +45,8 @@ export const useAuth = () => {
   });
 
   const loginMutation = useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
-      const response = await AuthApi.login(data.email, data.password);
-      localStorage.setItem("access_token", response.access_token);
-      return response;
-    },
+    mutationFn: (data: { email: string; password: string }) =>
+      AuthApi.login(data.email, data.password),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       router.push("/");
@@ -65,10 +56,13 @@ export const useAuth = () => {
     },
   });
 
-  const logout = () => {
-    localStorage.removeItem("access_token");
-    queryClient.clear();
-    router.push("/login");
+  const logout = async () => {
+    try {
+      await AuthApi.logout();
+    } finally {
+      queryClient.clear();
+      router.push("/login");
+    }
   };
 
   return {
@@ -77,7 +71,6 @@ export const useAuth = () => {
     logout,
     user,
     isLoadingUser,
-    isLoggedIn: isLoggedIn(),
     error,
     resetError: () => setError(null),
   };

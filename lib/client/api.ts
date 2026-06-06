@@ -39,12 +39,6 @@ export interface LoginResponse {
   user: UserPublic;
 }
 
-function authHeader(): Record<string, string> {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const error = await response
@@ -55,9 +49,9 @@ async function handleResponse<T>(response: Response): Promise<T> {
   return response.json();
 }
 
-// Shared JSON request: attaches the bearer token (when present), serializes the
-// body, and unwraps errors. Endpoints that need a non-JSON body (login) build
-// their own request.
+// Shared JSON request: serializes the body and unwraps errors. Auth rides on
+// the httpOnly cookie, sent automatically with same-origin requests. Endpoints
+// that need a non-JSON body (login) build their own request.
 async function apiRequest<T>(
   endpoint: string,
   options: { method?: string; body?: unknown } = {},
@@ -65,7 +59,7 @@ async function apiRequest<T>(
   const { method = "GET", body } = options;
   const response = await fetch(`${API_BASE}${endpoint}`, {
     method,
-    headers: { "Content-Type": "application/json", ...authHeader() },
+    headers: { "Content-Type": "application/json" },
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   });
   return handleResponse<T>(response);
@@ -90,6 +84,10 @@ export const AuthApi = {
 
   testToken(): Promise<UserPublic> {
     return apiRequest<UserPublic>("/login/test-token", { method: "POST" });
+  },
+
+  logout(): Promise<{ message: string }> {
+    return apiRequest<{ message: string }>("/logout", { method: "POST" });
   },
 };
 

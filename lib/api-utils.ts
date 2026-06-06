@@ -36,12 +36,15 @@ export async function parseJsonBody<T>(
 export async function getAuthenticatedUser(
   request: NextRequest,
 ): Promise<User | null> {
+  // The web app authenticates via an httpOnly cookie; external API clients send
+  // a Bearer token. Accept either.
   const authHeader = request.headers.get("Authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.substring(7)
+    : (request.cookies.get("access_token")?.value ?? null);
+  if (!token) {
     return null;
   }
-
-  const token = authHeader.substring(7);
   return getCurrentUser(token);
 }
 

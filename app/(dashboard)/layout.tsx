@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Navbar } from "@/components/layout/Navbar";
-import { useAuth, isLoggedIn } from "@/lib/client/useAuth";
+import { useAuth } from "@/lib/client/useAuth";
 
 export default function DashboardLayout({
   children,
@@ -15,11 +15,13 @@ export default function DashboardLayout({
   const router = useRouter();
   const { user, isLoadingUser } = useAuth();
 
+  // Middleware redirects requests without a cookie. This also covers an expired
+  // or invalid cookie: getCurrentUser returns null, so we send them to /login.
   useEffect(() => {
-    if (!isLoggedIn()) {
+    if (!isLoadingUser && !user) {
       router.push("/login");
     }
-  }, [router]);
+  }, [isLoadingUser, user, router]);
 
   if (isLoadingUser || !user) {
     return (

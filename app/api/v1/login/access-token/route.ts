@@ -42,11 +42,21 @@ export async function POST(request: NextRequest) {
 
     const accessToken = createAccessToken(user.id, user.email);
 
-    return NextResponse.json({
+    const authResponse = NextResponse.json({
       access_token: accessToken,
       token_type: "bearer",
       user: excludePassword(user),
     });
+    // httpOnly cookie for the web app; the body still returns the token for
+    // external API clients that send it as a Bearer header.
+    authResponse.cookies.set("access_token", accessToken, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 8,
+    });
+    return authResponse;
   } catch (error) {
     console.error("Login error:", error);
     return errorResponse(500, "Internal server error");
