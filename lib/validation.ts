@@ -30,3 +30,11 @@ export const optionalPasswordRules = {
   validate: (value: string | undefined) =>
     !value || (validatePassword(value) ?? true),
 };
+
+export const organisationRules = {
+  required: "Organisation is required",
+  maxLength: {
+    value: 255,
+    message: "Organisation must be at most 255 characters",
+  },
+};

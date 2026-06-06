@@ -3,7 +3,7 @@
 import { Button, Field, Input } from "@chakra-ui/react";
 import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UsersApi } from "@/lib/client/api";
 import { emailRules, passwordRules } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
@@ -28,6 +28,12 @@ export function AddUserDialog() {
   } = useForm<AddUserFormData>({
     defaultValues: { is_superuser: false },
   });
+
+  useEffect(() => {
+    if (open) {
+      reset();
+    }
+  }, [open, reset]);
 
   const mutation = useMutationWithInvalidation({
     invalidateKey: queryKeys.users,

@@ -3,8 +3,9 @@
 import { Button, Field, Input, Textarea } from "@chakra-ui/react";
 import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ContactsApi } from "@/lib/client/api";
+import { organisationRules } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
 import { FormDialog } from "@/components/FormDialog";
 
@@ -21,6 +22,12 @@ export function AddContactDialog() {
     reset,
     formState: { errors },
   } = useForm<AddContactFormData>();
+
+  useEffect(() => {
+    if (open) {
+      reset();
+    }
+  }, [open, reset]);
 
   const mutation = useMutationWithInvalidation({
     invalidateKey: queryKeys.contacts,
@@ -51,13 +58,7 @@ export function AddContactDialog() {
       <Field.Root invalid={!!errors.organisation}>
         <Field.Label>Organisation</Field.Label>
         <Input
-          {...register("organisation", {
-            required: "Organisation is required",
-            maxLength: {
-              value: 255,
-              message: "Organisation must be at most 255 characters",
-            },
-          })}
+          {...register("organisation", organisationRules)}
           placeholder="Enter organisation name"
         />
         {errors.organisation && (

@@ -5,6 +5,7 @@ import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalid
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { ContactsApi, type Contact } from "@/lib/client/api";
+import { organisationRules } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
 import { FormDialog } from "@/components/FormDialog";
 
@@ -68,13 +69,7 @@ export function EditContactDialog({
       <Field.Root invalid={!!errors.organisation}>
         <Field.Label>Organisation</Field.Label>
         <Input
-          {...register("organisation", {
-            required: "Organisation is required",
-            maxLength: {
-              value: 255,
-              message: "Organisation must be at most 255 characters",
-            },
-          })}
+          {...register("organisation", organisationRules)}
           placeholder="Enter organisation name"
         />
         {errors.organisation && (
