@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword, excludePassword, publicUserSelect } from "@/lib/auth";
 import {
-  requireSuperuser,
+  withAuth,
   errorResponse,
   successResponse,
   parseQueryParams,
@@ -12,13 +12,8 @@ import {
   isUniqueConstraintError,
 } from "@/lib/api-utils";
 
-export async function GET(request: NextRequest) {
-  try {
-    const result = await requireSuperuser(request);
-    if ("error" in result) {
-      return result.error;
-    }
-
+export const GET = withAuth(
+  async (request: NextRequest) => {
     const { skip, limit } = parseQueryParams(request);
 
     const [users, count] = await Promise.all([
@@ -35,19 +30,12 @@ export async function GET(request: NextRequest) {
       data: users,
       count,
     });
-  } catch (error) {
-    console.error("List users error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+  },
+  { superuser: true, errorLabel: "List users error:" },
+);
 
-export async function POST(request: NextRequest) {
-  try {
-    const result = await requireSuperuser(request);
-    if ("error" in result) {
-      return result.error;
-    }
-
+export const POST = withAuth(
+  async (request: NextRequest) => {
     const parsed = await parseJsonBody<{
       email?: string;
       password?: string;
@@ -82,22 +70,23 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await hashPassword(password);
 
-    const user = await prisma.user.create({
-      data: {
-        email,
-        hashedPassword,
-        fullName: full_name || null,
-        isActive: true,
-        isSuperuser: is_superuser === true,
-      },
-    });
-
-    return successResponse(excludePassword(user), 201);
-  } catch (error) {
-    if (isUniqueConstraintError(error)) {
-      return errorResponse(409, "The user with this email already exists");
+    try {
+      const user = await prisma.user.create({
+        data: {
+          email,
+          hashedPassword,
+          fullName: full_name || null,
+          isActive: true,
+          isSuperuser: is_superuser === true,
+        },
+      });
+      return successResponse(excludePassword(user), 201);
+    } catch (error) {
+      if (isUniqueConstraintError(error)) {
+        return errorResponse(409, "The user with this email already exists");
+      }
+      throw error;
     }
-    console.error("Create user error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+  },
+  { superuser: true, errorLabel: "Create user error:" },
+);

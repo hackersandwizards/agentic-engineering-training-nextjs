@@ -1,9 +1,7 @@
-import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword, excludePassword } from "@/lib/auth";
 import {
-  requireAuth,
-  requireSuperuser,
+  withAuth,
   errorResponse,
   successResponse,
   validateEmail,
@@ -12,50 +10,38 @@ import {
   isUniqueConstraintError,
 } from "@/lib/api-utils";
 
-interface RouteParams {
-  params: Promise<{ userId: string }>;
-}
+type RouteContext = { params: Promise<{ userId: string }> };
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
-  try {
+export const GET = withAuth<RouteContext>(
+  async (request, user, { params }) => {
     const { userId } = await params;
-    const result = await requireAuth(request);
-    if ("error" in result) {
-      return result.error;
-    }
 
-    if (result.user.id !== userId && !result.user.isSuperuser) {
+    if (user.id !== userId && !user.isSuperuser) {
       return errorResponse(403, "The user doesn't have enough privileges");
     }
 
-    const user = await prisma.user.findUnique({
+    const target = await prisma.user.findUnique({
       where: { id: userId },
     });
 
-    if (!user) {
+    if (!target) {
       return errorResponse(404, "User not found");
     }
 
-    return successResponse(excludePassword(user));
-  } catch (error) {
-    console.error("Get user error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+    return successResponse(excludePassword(target));
+  },
+  { errorLabel: "Get user error:" },
+);
 
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  try {
+export const PATCH = withAuth<RouteContext>(
+  async (request, user, { params }) => {
     const { userId } = await params;
-    const result = await requireSuperuser(request);
-    if ("error" in result) {
-      return result.error;
-    }
 
-    const user = await prisma.user.findUnique({
+    const target = await prisma.user.findUnique({
       where: { id: userId },
     });
 
-    if (!user) {
+    if (!target) {
       return errorResponse(404, "User not found");
     }
 
@@ -83,7 +69,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       if (!validateEmail(email)) {
         return errorResponse(400, "Invalid email format");
       }
-      if (email !== user.email) {
+      if (email !== target.email) {
         const existingUser = await prisma.user.findUnique({
           where: { email },
         });
@@ -114,41 +100,38 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       updateData.isActive = is_active === true;
     }
 
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: updateData,
-    });
-
-    return successResponse(excludePassword(updatedUser));
-  } catch (error) {
-    if (isUniqueConstraintError(error)) {
-      return errorResponse(409, "Email already registered");
+    try {
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: updateData,
+      });
+      return successResponse(excludePassword(updatedUser));
+    } catch (error) {
+      if (isUniqueConstraintError(error)) {
+        return errorResponse(409, "Email already registered");
+      }
+      throw error;
     }
-    console.error("Update user error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+  },
+  { superuser: true, errorLabel: "Update user error:" },
+);
 
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  try {
+export const DELETE = withAuth<RouteContext>(
+  async (request, user, { params }) => {
     const { userId } = await params;
-    const result = await requireSuperuser(request);
-    if ("error" in result) {
-      return result.error;
-    }
 
-    if (result.user.id === userId) {
+    if (user.id === userId) {
       return errorResponse(
         403,
         "Super users are not allowed to delete themselves",
       );
     }
 
-    const user = await prisma.user.findUnique({
+    const target = await prisma.user.findUnique({
       where: { id: userId },
     });
 
-    if (!user) {
+    if (!target) {
       return errorResponse(404, "User not found");
     }
 
@@ -157,8 +140,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     });
 
     return successResponse({ message: "User deleted successfully" });
-  } catch (error) {
-    console.error("Delete user error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+  },
+  { superuser: true, errorLabel: "Delete user error:" },
+);

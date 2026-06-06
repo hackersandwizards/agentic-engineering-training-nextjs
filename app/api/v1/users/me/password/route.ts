@@ -2,20 +2,15 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/auth";
 import {
-  requireAuth,
+  withAuth,
   errorResponse,
   successResponse,
   validatePassword,
   parseJsonBody,
 } from "@/lib/api-utils";
 
-export async function PATCH(request: NextRequest) {
-  try {
-    const result = await requireAuth(request);
-    if ("error" in result) {
-      return result.error;
-    }
-
+export const PATCH = withAuth(
+  async (request: NextRequest, user) => {
     const parsed = await parseJsonBody<{
       current_password?: string;
       new_password?: string;
@@ -34,7 +29,7 @@ export async function PATCH(request: NextRequest) {
 
     const isCurrentPasswordValid = await verifyPassword(
       current_password,
-      result.user.hashedPassword,
+      user.hashedPassword,
     );
     if (!isCurrentPasswordValid) {
       return errorResponse(400, "Incorrect password");
@@ -55,13 +50,11 @@ export async function PATCH(request: NextRequest) {
     const hashedNewPassword = await hashPassword(new_password);
 
     await prisma.user.update({
-      where: { id: result.user.id },
+      where: { id: user.id },
       data: { hashedPassword: hashedNewPassword },
     });
 
     return successResponse({ message: "Password updated successfully" });
-  } catch (error) {
-    console.error("Change password error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+  },
+  { errorLabel: "Change password error:" },
+);

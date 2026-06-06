@@ -101,4 +101,30 @@ export function parseQueryParams(request: NextRequest) {
   return { skip, limit: Math.min(limit, 100) };
 }
 
+type RouteContext<P = Record<string, string>> = { params: Promise<P> };
+
+export function withAuth<C extends RouteContext = RouteContext>(
+  handler: (
+    request: NextRequest,
+    user: User,
+    context: C,
+  ) => Promise<NextResponse>,
+  options: { superuser?: boolean; errorLabel?: string } = {},
+) {
+  return async (request: NextRequest, context: C): Promise<NextResponse> => {
+    try {
+      const result = options.superuser
+        ? await requireSuperuser(request)
+        : await requireAuth(request);
+      if ("error" in result) {
+        return result.error;
+      }
+      return await handler(request, result.user, context);
+    } catch (error) {
+      console.error(options.errorLabel ?? "Request error", error);
+      return errorResponse(500, "Internal server error");
+    }
+  };
+}
+
 export { validateEmail, validatePassword } from "./validation";

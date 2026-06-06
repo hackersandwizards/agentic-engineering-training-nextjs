@@ -1,25 +1,18 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import {
-  requireAuth,
+  withAuth,
   errorResponse,
   successResponse,
   parseQueryParams,
   parseJsonBody,
 } from "@/lib/api-utils";
 
-export async function GET(request: NextRequest) {
-  try {
-    const result = await requireAuth(request);
-    if ("error" in result) {
-      return result.error;
-    }
-
+export const GET = withAuth(
+  async (request: NextRequest, user) => {
     const { skip, limit } = parseQueryParams(request);
 
-    const whereClause = result.user.isSuperuser
-      ? {}
-      : { ownerId: result.user.id };
+    const whereClause = user.isSuperuser ? {} : { ownerId: user.id };
 
     const [contacts, count] = await Promise.all([
       prisma.contact.findMany({
@@ -44,19 +37,12 @@ export async function GET(request: NextRequest) {
       data: contacts,
       count,
     });
-  } catch (error) {
-    console.error("List contacts error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+  },
+  { errorLabel: "List contacts error:" },
+);
 
-export async function POST(request: NextRequest) {
-  try {
-    const result = await requireAuth(request);
-    if ("error" in result) {
-      return result.error;
-    }
-
+export const POST = withAuth(
+  async (request: NextRequest, user) => {
     const parsed = await parseJsonBody<{
       organisation?: string;
       description?: string;
@@ -78,7 +64,7 @@ export async function POST(request: NextRequest) {
       data: {
         organisation,
         description: description || null,
-        ownerId: result.user.id,
+        ownerId: user.id,
       },
       include: {
         owner: {
@@ -92,8 +78,6 @@ export async function POST(request: NextRequest) {
     });
 
     return successResponse(contact, 201);
-  } catch (error) {
-    console.error("Create contact error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+  },
+  { errorLabel: "Create contact error:" },
+);

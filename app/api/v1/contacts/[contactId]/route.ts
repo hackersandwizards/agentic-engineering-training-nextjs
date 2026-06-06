@@ -1,24 +1,17 @@
-import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import {
-  requireAuth,
+  withAuth,
   errorResponse,
   successResponse,
   parseJsonBody,
   assertOwnerOrSuperuser,
 } from "@/lib/api-utils";
 
-interface RouteParams {
-  params: Promise<{ contactId: string }>;
-}
+type RouteContext = { params: Promise<{ contactId: string }> };
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
-  try {
+export const GET = withAuth<RouteContext>(
+  async (request, user, { params }) => {
     const { contactId } = await params;
-    const result = await requireAuth(request);
-    if ("error" in result) {
-      return result.error;
-    }
 
     const contact = await prisma.contact.findUnique({
       where: { id: contactId },
@@ -37,28 +30,19 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return errorResponse(404, "Contact not found");
     }
 
-    const permissionError = assertOwnerOrSuperuser(
-      contact.ownerId,
-      result.user,
-    );
+    const permissionError = assertOwnerOrSuperuser(contact.ownerId, user);
     if (permissionError) {
       return permissionError;
     }
 
     return successResponse(contact);
-  } catch (error) {
-    console.error("Get contact error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+  },
+  { errorLabel: "Get contact error:" },
+);
 
-export async function PUT(request: NextRequest, { params }: RouteParams) {
-  try {
+export const PUT = withAuth<RouteContext>(
+  async (request, user, { params }) => {
     const { contactId } = await params;
-    const result = await requireAuth(request);
-    if ("error" in result) {
-      return result.error;
-    }
 
     const contact = await prisma.contact.findUnique({
       where: { id: contactId },
@@ -68,10 +52,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return errorResponse(404, "Contact not found");
     }
 
-    const permissionError = assertOwnerOrSuperuser(
-      contact.ownerId,
-      result.user,
-    );
+    const permissionError = assertOwnerOrSuperuser(contact.ownerId, user);
     if (permissionError) {
       return permissionError;
     }
@@ -120,19 +101,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     });
 
     return successResponse(updatedContact);
-  } catch (error) {
-    console.error("Update contact error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+  },
+  { errorLabel: "Update contact error:" },
+);
 
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  try {
+export const DELETE = withAuth<RouteContext>(
+  async (request, user, { params }) => {
     const { contactId } = await params;
-    const result = await requireAuth(request);
-    if ("error" in result) {
-      return result.error;
-    }
 
     const contact = await prisma.contact.findUnique({
       where: { id: contactId },
@@ -142,10 +117,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return errorResponse(404, "Contact not found");
     }
 
-    const permissionError = assertOwnerOrSuperuser(
-      contact.ownerId,
-      result.user,
-    );
+    const permissionError = assertOwnerOrSuperuser(contact.ownerId, user);
     if (permissionError) {
       return permissionError;
     }
@@ -155,8 +127,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     });
 
     return successResponse({ message: "Contact deleted successfully" });
-  } catch (error) {
-    console.error("Delete contact error:", error);
-    return errorResponse(500, "Internal server error");
-  }
-}
+  },
+  { errorLabel: "Delete contact error:" },
+);
