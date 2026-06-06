@@ -8,10 +8,10 @@ afterEach(() => {
   cleanup();
 });
 
-// App Router client components use these navigation hooks (e.g.
-// app/(dashboard)/layout.tsx, lib/client/useAuth.ts). Stub them so components
-// render in isolation. Override per-test with vi.mocked(...) when a test needs
-// to assert on navigation.
+// Client components here use useRouter and usePathname (see
+// app/(dashboard)/layout.tsx, components/layout/Sidebar.tsx, lib/client/useAuth.ts).
+// Stub them so components render in isolation. Add more next/navigation exports
+// here when a test needs them.
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: vi.fn(),
@@ -22,8 +22,4 @@ vi.mock("next/navigation", () => ({
     refresh: vi.fn(),
   }),
   usePathname: () => "/",
-  useSearchParams: () => new URLSearchParams(),
-  useParams: () => ({}),
-  redirect: vi.fn(),
-  notFound: vi.fn(),
 }));
