@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge, Box, Flex, Heading, Stack, Table } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UsersApi, type UserPublic } from "@/lib/client/api";
@@ -12,7 +12,11 @@ import { DeleteUserDialog } from "@/components/admin/DeleteUserDialog";
 import { DataTable } from "@/components/DataTable";
 import { RowActionsMenu } from "@/components/RowActionsMenu";
 import { queryKeys } from "@/lib/client/queryKeys";
-import { usePagination, PAGE_SIZE } from "@/lib/client/usePagination";
+import {
+  usePagination,
+  useClampPage,
+  PAGE_SIZE,
+} from "@/lib/client/usePagination";
 
 export default function AdminPage() {
   const router = useRouter();
@@ -25,6 +29,7 @@ export default function AdminPage() {
     queryKey: queryKeys.usersPage(page),
     queryFn: () => UsersApi.list(skip, limit),
     enabled: !!currentUser?.isSuperuser,
+    placeholderData: keepPreviousData,
   });
 
   const users = data?.data || [];
@@ -37,13 +42,9 @@ export default function AdminPage() {
     }
   }, [currentUser, router]);
 
-  useEffect(() => {
-    if (totalPages > 0 && page > totalPages - 1) {
-      setPage(totalPages - 1);
-    }
-  }, [page, totalPages, setPage]);
+  useClampPage(page, totalPages, setPage);
 
-  if (currentUser && !currentUser.isSuperuser) {
+  if (!currentUser || !currentUser.isSuperuser) {
     return null;
   }
 

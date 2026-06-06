@@ -1,8 +1,8 @@
 "use client";
 
 import { Box, Flex, Heading, Stack, Table } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useState } from "react";
 import { ContactsApi, type Contact } from "@/lib/client/api";
 import { AddContactDialog } from "@/components/contacts/AddContactDialog";
 import { EditContactDialog } from "@/components/contacts/EditContactDialog";
@@ -10,7 +10,11 @@ import { DeleteContactDialog } from "@/components/contacts/DeleteContactDialog";
 import { DataTable } from "@/components/DataTable";
 import { RowActionsMenu } from "@/components/RowActionsMenu";
 import { queryKeys } from "@/lib/client/queryKeys";
-import { usePagination, PAGE_SIZE } from "@/lib/client/usePagination";
+import {
+  usePagination,
+  useClampPage,
+  PAGE_SIZE,
+} from "@/lib/client/usePagination";
 
 export default function ContactsPage() {
   const { page, setPage, skip, limit, prev, next } = usePagination();
@@ -20,17 +24,14 @@ export default function ContactsPage() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: queryKeys.contactsPage(page),
     queryFn: () => ContactsApi.list(skip, limit),
+    placeholderData: keepPreviousData,
   });
 
   const contacts = data?.data || [];
   const totalCount = data?.count || 0;
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
-  useEffect(() => {
-    if (totalPages > 0 && page > totalPages - 1) {
-      setPage(totalPages - 1);
-    }
-  }, [page, totalPages, setPage]);
+  useClampPage(page, totalPages, setPage);
 
   return (
     <Box>
