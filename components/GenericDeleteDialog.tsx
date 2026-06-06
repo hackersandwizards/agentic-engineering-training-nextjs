@@ -11,6 +11,7 @@ interface GenericDeleteDialogProps {
   confirmLabel?: string;
   invalidateKey: readonly unknown[];
   onDelete: () => Promise<unknown>;
+  onSuccess?: () => void;
 }
 
 export function GenericDeleteDialog({
@@ -21,12 +22,14 @@ export function GenericDeleteDialog({
   confirmLabel = "Delete",
   invalidateKey,
   onDelete,
+  onSuccess,
 }: GenericDeleteDialogProps) {
   const mutation = useMutationWithInvalidation({
     invalidateKey,
     mutationFn: onDelete,
     onSuccess: () => {
       onOpenChange(false);
+      onSuccess?.();
     },
   });
 

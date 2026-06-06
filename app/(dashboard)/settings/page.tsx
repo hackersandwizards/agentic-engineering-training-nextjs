@@ -3,8 +3,6 @@
 import {
   Box,
   Button,
-  Dialog,
-  Portal,
   Field,
   Heading,
   Input,
@@ -20,6 +18,7 @@ import { useAuth } from "@/lib/client/useAuth";
 import { emailRules, passwordRules } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
 import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
+import { GenericDeleteDialog } from "@/components/GenericDeleteDialog";
 
 interface UserInfoFormData {
   email: string;
@@ -64,13 +63,6 @@ export default function SettingsPage() {
       UsersApi.changePassword(data),
     onSuccess: () => {
       passwordForm.reset();
-    },
-  });
-
-  const deleteAccountMutation = useMutation({
-    mutationFn: () => UsersApi.deleteMe(),
-    onSuccess: () => {
-      logout();
     },
   });
 
@@ -252,40 +244,16 @@ export default function SettingsPage() {
         </Tabs.Root>
       </Stack>
 
-      <Dialog.Root
+      <GenericDeleteDialog
         open={deleteOpen}
-        onOpenChange={(e) => setDeleteOpen(e.open)}
-      >
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Positioner>
-            <Dialog.Content>
-              <Dialog.Header>
-                <Dialog.Title>Delete Account</Dialog.Title>
-              </Dialog.Header>
-              <Dialog.Body>
-                <Text>
-                  Are you sure you want to delete your account? This action
-                  cannot be undone and all your data will be permanently
-                  removed.
-                </Text>
-              </Dialog.Body>
-              <Dialog.Footer>
-                <Dialog.ActionTrigger asChild>
-                  <Button variant="ghost">Cancel</Button>
-                </Dialog.ActionTrigger>
-                <Button
-                  colorScheme="red"
-                  onClick={() => deleteAccountMutation.mutate()}
-                  loading={deleteAccountMutation.isPending}
-                >
-                  Delete Account
-                </Button>
-              </Dialog.Footer>
-            </Dialog.Content>
-          </Dialog.Positioner>
-        </Portal>
-      </Dialog.Root>
+        onOpenChange={setDeleteOpen}
+        title="Delete Account"
+        description="Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed."
+        confirmLabel="Delete Account"
+        invalidateKey={queryKeys.currentUser}
+        onDelete={() => UsersApi.deleteMe()}
+        onSuccess={logout}
+      />
     </Box>
   );
 }
