@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
-import { hashPassword, excludePassword } from "@/lib/auth";
+import { hashPassword, excludePassword, publicUserSelect } from "@/lib/auth";
 import {
   requireSuperuser,
   errorResponse,
@@ -9,6 +9,7 @@ import {
   validateEmail,
   validatePassword,
   parseJsonBody,
+  isUniqueConstraintError,
 } from "@/lib/api-utils";
 
 // GET /api/v1/users - List all users (admin only)
@@ -26,12 +27,13 @@ export async function GET(request: NextRequest) {
         skip,
         take: limit,
         orderBy: { createdAt: "desc" },
+        select: publicUserSelect,
       }),
       prisma.user.count(),
     ]);
 
     return successResponse({
-      data: users.map(excludePassword),
+      data: users,
       count,
     });
   } catch (error) {
@@ -95,6 +97,9 @@ export async function POST(request: NextRequest) {
 
     return successResponse(excludePassword(user), 201);
   } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return errorResponse(409, "The user with this email already exists");
+    }
     console.error("Create user error:", error);
     return errorResponse(500, "Internal server error");
   }

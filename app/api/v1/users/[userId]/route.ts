@@ -9,6 +9,7 @@ import {
   validateEmail,
   validatePassword,
   parseJsonBody,
+  isUniqueConstraintError,
 } from "@/lib/api-utils";
 
 interface RouteParams {
@@ -123,6 +124,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     return successResponse(excludePassword(updatedUser));
   } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return errorResponse(409, "Email already registered");
+    }
     console.error("Update user error:", error);
     return errorResponse(500, "Internal server error");
   }

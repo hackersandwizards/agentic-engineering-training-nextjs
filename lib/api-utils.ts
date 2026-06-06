@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "./auth";
-import type { User } from "@prisma/client";
+import { Prisma, type User } from "@prisma/client";
 
 export class ApiError extends Error {
   constructor(
@@ -73,6 +73,29 @@ export async function requireSuperuser(
 function parseNonNegativeInt(value: string | null, fallback: number): number {
   const parsed = Number.parseInt(value ?? "", 10);
   return Number.isInteger(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
+// Returns a 403 response if the user is neither the resource owner nor a
+// superuser, otherwise null. Centralizes the ownership check used by the
+// per-resource routes.
+export function assertOwnerOrSuperuser(
+  ownerId: string,
+  user: User,
+  message = "Not enough permissions",
+): NextResponse | null {
+  if (ownerId !== user.id && !user.isSuperuser) {
+    return errorResponse(403, message);
+  }
+  return null;
+}
+
+// True when a Prisma write failed a unique constraint (e.g. duplicate email),
+// so the route can return 409 instead of a generic 500.
+export function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2002"
+  );
 }
 
 export function parseQueryParams(request: NextRequest) {

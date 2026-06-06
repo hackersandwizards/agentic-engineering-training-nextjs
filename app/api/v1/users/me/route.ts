@@ -7,6 +7,7 @@ import {
   successResponse,
   validateEmail,
   parseJsonBody,
+  isUniqueConstraintError,
 } from "@/lib/api-utils";
 
 // GET /api/v1/users/me - Get current user
@@ -71,6 +72,9 @@ export async function PATCH(request: NextRequest) {
 
     return successResponse(excludePassword(updatedUser));
   } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return errorResponse(409, "Email already registered");
+    }
     console.error("Update current user error:", error);
     return errorResponse(500, "Internal server error");
   }

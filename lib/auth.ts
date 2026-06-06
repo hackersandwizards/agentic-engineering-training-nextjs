@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt, { type SignOptions } from "jsonwebtoken";
+import { Prisma } from "@prisma/client";
 import { prisma } from "./db";
 
 const JWT_SECRET = process.env.JWT_SECRET || "TheKeyForDevModeNoIssueIfShared";
@@ -100,3 +101,15 @@ export function excludePassword<T extends { hashedPassword: string }>(
   const { hashedPassword: _, ...userWithoutPassword } = user;
   return userWithoutPassword;
 }
+
+// Prisma select for the public user shape (everything except hashedPassword),
+// so password hashes never leave the database for list/response queries.
+export const publicUserSelect = {
+  id: true,
+  email: true,
+  fullName: true,
+  isActive: true,
+  isSuperuser: true,
+  createdAt: true,
+  updatedAt: true,
+} satisfies Prisma.UserSelect;

@@ -5,6 +5,7 @@ import {
   errorResponse,
   successResponse,
   parseJsonBody,
+  assertOwnerOrSuperuser,
 } from "@/lib/api-utils";
 
 interface RouteParams {
@@ -37,9 +38,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return errorResponse(404, "Contact not found");
     }
 
-    // Check permission: owner or superuser
-    if (contact.ownerId !== result.user.id && !result.user.isSuperuser) {
-      return errorResponse(403, "Not enough permissions");
+    const permissionError = assertOwnerOrSuperuser(
+      contact.ownerId,
+      result.user,
+    );
+    if (permissionError) {
+      return permissionError;
     }
 
     return successResponse(contact);
@@ -66,9 +70,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return errorResponse(404, "Contact not found");
     }
 
-    // Check permission: owner or superuser
-    if (contact.ownerId !== result.user.id && !result.user.isSuperuser) {
-      return errorResponse(403, "Not enough permissions");
+    const permissionError = assertOwnerOrSuperuser(
+      contact.ownerId,
+      result.user,
+    );
+    if (permissionError) {
+      return permissionError;
     }
 
     const parsed = await parseJsonBody<{
@@ -138,9 +145,12 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return errorResponse(404, "Contact not found");
     }
 
-    // Check permission: owner or superuser
-    if (contact.ownerId !== result.user.id && !result.user.isSuperuser) {
-      return errorResponse(403, "Not enough permissions");
+    const permissionError = assertOwnerOrSuperuser(
+      contact.ownerId,
+      result.user,
+    );
+    if (permissionError) {
+      return permissionError;
     }
 
     await prisma.contact.delete({

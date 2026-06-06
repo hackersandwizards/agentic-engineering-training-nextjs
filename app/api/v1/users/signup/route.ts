@@ -7,6 +7,7 @@ import {
   validateEmail,
   validatePassword,
   parseJsonBody,
+  isUniqueConstraintError,
 } from "@/lib/api-utils";
 
 export async function POST(request: NextRequest) {
@@ -57,6 +58,9 @@ export async function POST(request: NextRequest) {
 
     return successResponse(excludePassword(user), 201);
   } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return errorResponse(409, "The user with this email already exists");
+    }
     console.error("Signup error:", error);
     return errorResponse(500, "Internal server error");
   }
