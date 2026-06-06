@@ -1,0 +1,9 @@
+{
+  "name": "build-pipeline",
+  "description": "Scaffold multi-step agent pipelines: per-stage subagents (each with a SubagentStop gate), manual launcher skills, and a dynamic-workflow orchestration script. Run once per stage you add.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Benedikt Stemmildt",
+    "email": "benedikt@stemmildt.com"
+  }
+}

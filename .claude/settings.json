@@ -1,0 +1,14 @@
+{
+  "extraKnownMarketplaces": {
+    "hackersandwizards": {
+      "source": {
+        "source": "directory",
+        "path": "."
+      }
+    }
+  },
+  "enabledPlugins": {
+    "skill-creator@claude-plugins-official": true,
+    "build-pipeline@hackersandwizards": true
+  }
+}

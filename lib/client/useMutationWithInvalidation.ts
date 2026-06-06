@@ -9,7 +9,7 @@ import {
 
 export function useMutationWithInvalidation<TData = unknown, TVariables = void>(
   options: UseMutationOptions<TData, Error, TVariables> & {
-    invalidateKey: readonly unknown[];
+    invalidateKey?: readonly unknown[];
   },
 ): UseMutationResult<TData, Error, TVariables> {
   const queryClient = useQueryClient();
@@ -17,7 +17,9 @@ export function useMutationWithInvalidation<TData = unknown, TVariables = void>(
   return useMutation<TData, Error, TVariables>({
     ...rest,
     onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: invalidateKey });
+      if (invalidateKey) {
+        queryClient.invalidateQueries({ queryKey: invalidateKey });
+      }
       return onSuccess?.(...args);
     },
   });

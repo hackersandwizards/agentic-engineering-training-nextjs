@@ -9,7 +9,7 @@ interface GenericDeleteDialogProps {
   title: string;
   description: string;
   confirmLabel?: string;
-  invalidateKey: readonly unknown[];
+  invalidateKey?: readonly unknown[];
   onDelete: () => Promise<unknown>;
   onSuccess?: () => void;
 }

@@ -1,0 +1,15 @@
+{
+  "name": "hackersandwizards",
+  "owner": {
+    "name": "Benedikt Stemmildt"
+  },
+  "description": "Local marketplace for this repo's Claude Code plugins",
+  "plugins": [
+    {
+      "name": "build-pipeline",
+      "source": "./plugins/build-pipeline",
+      "description": "Scaffold one stage of a multi-step pipeline: a per-stage subagent with a SubagentStop gate, a manual launcher skill, and a dynamic-workflow orchestration script",
+      "version": "1.0.0"
+    }
+  ]
+}

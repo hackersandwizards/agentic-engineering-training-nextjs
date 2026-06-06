@@ -43,3 +43,6 @@ test-results
 *.db
 *.db-journal
 prisma/dev.db
+
+# Claude Code
+.claude/scheduled_tasks.lock

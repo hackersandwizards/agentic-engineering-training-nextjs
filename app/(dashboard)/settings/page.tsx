@@ -250,7 +250,6 @@ export default function SettingsPage() {
         title="Delete Account"
         description="Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed."
         confirmLabel="Delete Account"
-        invalidateKey={queryKeys.currentUser}
         onDelete={() => UsersApi.deleteMe()}
         onSuccess={logout}
       />
