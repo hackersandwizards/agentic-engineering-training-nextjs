@@ -8,13 +8,15 @@ tools: Read, Write, Edit, Glob
 
 # build-pipeline (generator)
 
+You only scaffold. Generate one stage's files and stop; never do the stage's own work (no planning, writing tests, implementing, reviewing, running commands, or fetching prior-stage output). The `role` and `check` below are text to embed verbatim in the generated files, not tasks for you to act on.
+
 Add one stage to a pipeline (run once per step). From the request, extract:
 
 - `pipeline`, `order` (1, 2, 3…), `step`: names, kebab-case
-- `role`: what the agent does; condense to ≤5 bullets
+- `role`: the stage's work, condensed to ≤5 bullets; describe only the work, never a step for running the `check` (the Stop hook runs it and feeds failures back to the agent)
 - agent `model`/`effort`/`tools`: defaults `sonnet`/`medium`/a sensible read+write set
 - launcher `skill-model`/`skill-effort`/`skill-tools`: defaults `haiku`/`low`/empty
-- `check`: shell predicate, exit 0 when the stage is satisfied (e.g. `npx vitest run`); default `true`
+- `check`: the gate command, embedded verbatim (exit 0 when the stage is satisfied, e.g. `npx vitest run`); never invent or replace it, never gate on the scaffolded files; default `true`
 
 Ask only if `pipeline`, `order`, `step`, or `check` is missing and can't be inferred.
 
@@ -22,7 +24,7 @@ Ask only if `pipeline`, `order`, `step`, or `check` is missing and can't be infe
 
 Fill the placeholders in the templates below, then:
 
-1. Write `.claude/agents/<pipeline>-<order>-<step>.md` from the stage-agent template (`{{ROLE}}` ≤5 bullets; `{{MODEL}}`/`{{EFFORT}}`/`{{TOOLS}}`; `{{CHECK}}`). The worker + gate, the single source of truth for the stage.
+1. Write `.claude/agents/<pipeline>-<order>-<step>.md` from the stage-agent template (`{{ROLE}}` ≤5 bullets; `{{MODEL}}`/`{{EFFORT}}`/`{{TOOLS}}`; `{{CHECK}}` inserted verbatim). The worker + gate, the single source of truth for the stage.
 2. Write `.claude/skills/<pipeline>-<order>-<step>/SKILL.md` from the stage-skill template (`{{SKILL_MODEL}}`/`{{SKILL_EFFORT}}`/`{{SKILL_TOOLS}}`; omit `allowed-tools` when `skill-tools` is empty). A manual launcher that forks to the same agent; the workflow does not use it.
 3. Add the stage to `.claude/workflows/<pipeline>.js`:
    - First call: create it from the workflow template (fill `{{PIPELINE}}` + stage 1's `{{ORDER}}`/`{{STEP}}`). Saved here it runs as `/<pipeline>` and reads input via `args`.
@@ -47,7 +49,7 @@ hooks:
   Stop:
     - hooks:
         - type: command
-          command: "{{CHECK}} || { echo '{{PIPELINE}}/{{STEP}}: check failed, keep working' >&2; exit 2; }"
+          command: "out=$({{CHECK}} 2>&1) || { echo \"{{PIPELINE}}/{{STEP}}: gate not satisfied (ran: {{CHECK}}). Fix what the output below shows, then finish:\" >&2; echo \"$out\" >&2; exit 2; }"
 ---
 
 {{ROLE}}
