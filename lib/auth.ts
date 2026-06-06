@@ -56,21 +56,20 @@ export function verifyAccessToken(token: string): JwtPayload | null {
   }
 }
 
+const DUMMY_PASSWORD_HASH =
+  "$2b$10$Lr0p5Jpo87WPHol0xdG8/.YGtOScFcl0xPORGZTi228eRRwBVOfMW";
+
 export async function authenticateUser(email: string, password: string) {
   const user = await prisma.user.findUnique({
     where: { email },
   });
 
-  if (!user) {
-    return null;
-  }
+  const isValid = await verifyPassword(
+    password,
+    user?.hashedPassword ?? DUMMY_PASSWORD_HASH,
+  );
 
-  if (!user.isActive) {
-    return null;
-  }
-
-  const isValid = await verifyPassword(password, user.hashedPassword);
-  if (!isValid) {
+  if (!user || !user.isActive || !isValid) {
     return null;
   }
 
