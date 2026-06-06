@@ -17,7 +17,7 @@ import { usePagination, PAGE_SIZE } from "@/lib/client/usePagination";
 export default function AdminPage() {
   const router = useRouter();
   const { user: currentUser } = useAuth();
-  const { page, skip, limit, prev, next } = usePagination();
+  const { page, setPage, skip, limit, prev, next } = usePagination();
   const [editUser, setEditUser] = useState<UserPublic | null>(null);
   const [deleteUser, setDeleteUser] = useState<UserPublic | null>(null);
 
@@ -27,19 +27,25 @@ export default function AdminPage() {
     enabled: !!currentUser?.isSuperuser,
   });
 
+  const users = data?.data || [];
+  const totalCount = data?.count || 0;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
   useEffect(() => {
     if (currentUser && !currentUser.isSuperuser) {
       router.push("/");
     }
   }, [currentUser, router]);
 
+  useEffect(() => {
+    if (totalPages > 0 && page > totalPages - 1) {
+      setPage(totalPages - 1);
+    }
+  }, [page, totalPages, setPage]);
+
   if (currentUser && !currentUser.isSuperuser) {
     return null;
   }
-
-  const users = data?.data || [];
-  const totalCount = data?.count || 0;
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
     <Box>

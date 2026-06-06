@@ -8,6 +8,7 @@ export function usePagination(pageSize = PAGE_SIZE) {
   const [page, setPage] = useState(0);
   return {
     page,
+    setPage,
     skip: page * pageSize,
     limit: pageSize,
     prev: () => setPage((p) => Math.max(0, p - 1)),

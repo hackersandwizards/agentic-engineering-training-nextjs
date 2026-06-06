@@ -2,7 +2,7 @@
 
 import { Box, Flex, Heading, Stack, Table } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ContactsApi, type Contact } from "@/lib/client/api";
 import { AddContactDialog } from "@/components/contacts/AddContactDialog";
 import { EditContactDialog } from "@/components/contacts/EditContactDialog";
@@ -13,7 +13,7 @@ import { queryKeys } from "@/lib/client/queryKeys";
 import { usePagination, PAGE_SIZE } from "@/lib/client/usePagination";
 
 export default function ContactsPage() {
-  const { page, skip, limit, prev, next } = usePagination();
+  const { page, setPage, skip, limit, prev, next } = usePagination();
   const [editContact, setEditContact] = useState<Contact | null>(null);
   const [deleteContact, setDeleteContact] = useState<Contact | null>(null);
 
@@ -25,6 +25,12 @@ export default function ContactsPage() {
   const contacts = data?.data || [];
   const totalCount = data?.count || 0;
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+  useEffect(() => {
+    if (totalPages > 0 && page > totalPages - 1) {
+      setPage(totalPages - 1);
+    }
+  }, [page, totalPages, setPage]);
 
   return (
     <Box>
