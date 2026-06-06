@@ -44,7 +44,7 @@ export default function AdminPage() {
 
   useClampPage(page, totalPages, setPage);
 
-  if (!currentUser || !currentUser.isSuperuser) {
+  if (currentUser && !currentUser.isSuperuser) {
     return null;
   }
 
