@@ -26,7 +26,7 @@ export default function ContactsPage() {
   const [editContact, setEditContact] = useState<Contact | null>(null);
   const [deleteContact, setDeleteContact] = useState<Contact | null>(null);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["contacts", page],
     queryFn: () => ContactsApi.list(page * PAGE_SIZE, PAGE_SIZE),
   });
@@ -67,6 +67,14 @@ export default function ContactsPage() {
                     </Table.Cell>
                   </Table.Row>
                 ))
+              ) : isError ? (
+                <Table.Row>
+                  <Table.Cell colSpan={3}>
+                    <Text textAlign="center" color="red.500" py={4}>
+                      Failed to load contacts: {(error as Error).message}
+                    </Text>
+                  </Table.Cell>
+                </Table.Row>
               ) : contacts.length === 0 ? (
                 <Table.Row>
                   <Table.Cell colSpan={3}>

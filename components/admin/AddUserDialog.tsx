@@ -8,9 +8,10 @@ import {
   Field,
   Input,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useState } from "react";
 import { UsersApi } from "@/lib/client/api";
 
@@ -28,6 +29,7 @@ export function AddUserDialog() {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<AddUserFormData>({
     defaultValues: { is_superuser: false },
@@ -107,11 +109,28 @@ export function AddUserDialog() {
                     />
                   </Field.Root>
 
-                  <Checkbox.Root {...register("is_superuser")}>
-                    <Checkbox.HiddenInput />
-                    <Checkbox.Control />
-                    <Checkbox.Label>Super user</Checkbox.Label>
-                  </Checkbox.Root>
+                  <Controller
+                    name="is_superuser"
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox.Root
+                        checked={field.value}
+                        onCheckedChange={(e) =>
+                          field.onChange(e.checked === true)
+                        }
+                      >
+                        <Checkbox.HiddenInput onBlur={field.onBlur} />
+                        <Checkbox.Control />
+                        <Checkbox.Label>Super user</Checkbox.Label>
+                      </Checkbox.Root>
+                    )}
+                  />
+
+                  {mutation.isError && (
+                    <Text color="red.500" fontSize="sm">
+                      {(mutation.error as Error).message}
+                    </Text>
+                  )}
                 </Stack>
               </form>
             </Dialog.Body>

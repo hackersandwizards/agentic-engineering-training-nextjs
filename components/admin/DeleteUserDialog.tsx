@@ -40,6 +40,11 @@ export function DeleteUserDialog({
                 &quot;? This action cannot be undone and all their data will be
                 permanently removed.
               </Text>
+              {mutation.isError && (
+                <Text color="red.500" fontSize="sm" mt={3}>
+                  {(mutation.error as Error).message}
+                </Text>
+              )}
             </Dialog.Body>
             <Dialog.Footer>
               <Dialog.ActionTrigger asChild>

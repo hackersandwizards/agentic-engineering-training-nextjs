@@ -7,6 +7,7 @@ import {
   Field,
   Input,
   Stack,
+  Text,
   Textarea,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -99,6 +100,12 @@ export function EditContactDialog({
                       placeholder="Enter description (optional)"
                     />
                   </Field.Root>
+
+                  {mutation.isError && (
+                    <Text color="red.500" fontSize="sm">
+                      {(mutation.error as Error).message}
+                    </Text>
+                  )}
                 </Stack>
               </form>
             </Dialog.Body>

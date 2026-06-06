@@ -31,7 +31,7 @@ export default function AdminPage() {
   const [editUser, setEditUser] = useState<UserPublic | null>(null);
   const [deleteUser, setDeleteUser] = useState<UserPublic | null>(null);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["users", page],
     queryFn: () => UsersApi.list(page * PAGE_SIZE, PAGE_SIZE),
     enabled: !!currentUser?.isSuperuser,
@@ -87,6 +87,14 @@ export default function AdminPage() {
                     </Table.Cell>
                   </Table.Row>
                 ))
+              ) : isError ? (
+                <Table.Row>
+                  <Table.Cell colSpan={5}>
+                    <Text textAlign="center" color="red.500" py={4}>
+                      Failed to load users: {(error as Error).message}
+                    </Text>
+                  </Table.Cell>
+                </Table.Row>
               ) : users.length === 0 ? (
                 <Table.Row>
                   <Table.Cell colSpan={5}>
