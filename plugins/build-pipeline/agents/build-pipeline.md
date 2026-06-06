@@ -18,6 +18,8 @@ Add one stage to a pipeline (run once per step). From the request, extract:
 - launcher `skill-model`/`skill-effort`/`skill-tools`: defaults `haiku`/`low`/empty
 - `check`: the gate command, embedded verbatim (exit 0 when the stage is satisfied, e.g. `npx vitest run`); never invent or replace it, never gate on the scaffolded files; default `true`
 
+When a stage produces a durable artifact (screenshot, report, log), have its role write under `/tmp`, never the repo tree, so the working tree stays clean for any downstream commit stage. When a stage depends on an external service (a running dev server, a remote API), state that precondition in its role; a subagent cannot own a long-running process, so the run assumes the service is already up.
+
 Ask only if `pipeline`, `order`, `step`, or `check` is missing and can't be inferred.
 
 ## Procedure

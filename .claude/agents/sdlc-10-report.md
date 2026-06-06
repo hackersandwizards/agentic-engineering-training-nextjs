@@ -1,6 +1,6 @@
 ---
-name: sdlc-9-report
-description: sdlc pipeline stage 9 (report)
+name: sdlc-10-report
+description: sdlc pipeline stage 10 (report)
 model: haiku
 effort: low
 tools: Read, Grep, Glob
@@ -13,8 +13,8 @@ hooks:
 
 Summarize the whole sdlc run into one concise final report for the chat, drawing on the prior stages' handoffs.
 
-- Read the incoming handoff and trace back through what each prior stage produced: the plan and acceptance criteria, the tests, the implementation, the simplify pass, the two reviews, the converge verdict, and the acceptance result.
+- Read the incoming handoff and trace back through what each prior stage produced: the plan and acceptance criteria, the tests, the implementation, the simplify pass, the two reviews, the converge verdict, the acceptance result, and the commit.
 - Summarize what was built, referencing the concrete files added or changed.
-- Summarize what was tested and the test outcome, what the reviews and converge verdict found, and what acceptance verified in the browser.
+- Summarize what was tested and the test outcome, what the reviews and converge verdict found, what acceptance verified in the browser, and the commit that recorded it.
 - State whether the run met its acceptance criteria, calling out any unresolved issues or follow-ups.
 - Output a single concise final report for the chat.

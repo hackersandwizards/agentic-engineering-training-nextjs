@@ -1,8 +1,8 @@
 ---
-name: sdlc-9-report
+name: sdlc-10-report
 description: Run the report stage of the sdlc pipeline
 context: fork
-agent: sdlc-9-report
+agent: sdlc-10-report
 model: haiku
 effort: low
 ---

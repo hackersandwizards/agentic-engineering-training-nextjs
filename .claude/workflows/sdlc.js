@@ -8,7 +8,7 @@ export const meta = {
 //
 // Flow: plan -> tests -> implement -> simplify, then review-claude || review-codex in
 // parallel; converge decides. On issues, loop back through implement -> simplify and
-// re-review, up to 3 rounds, then escalate to a human. When clean: acceptance -> report.
+// re-review, up to 3 rounds, then escalate to a human. When clean: acceptance -> commit -> report.
 
 const stage = (name, prev, phase, schema) =>
   agent(
@@ -53,6 +53,7 @@ while (true) {
 }
 
 out = await stage("sdlc-8-acceptance", out, "acceptance");
-out = await stage("sdlc-9-report", out, "report");
+out = await stage("sdlc-9-commit", out, "commit");
+out = await stage("sdlc-10-report", out, "report");
 // build-pipeline: append stage lines above this line
 return out;
