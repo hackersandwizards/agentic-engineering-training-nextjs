@@ -18,7 +18,7 @@ export async function hashPassword(password: string): Promise<string> {
 
 export async function verifyPassword(
   password: string,
-  hashedPassword: string
+  hashedPassword: string,
 ): Promise<boolean> {
   return bcrypt.compare(password, hashedPassword);
 }
@@ -33,7 +33,7 @@ export function createAccessToken(userId: string, email: string): string {
       email,
     },
     JWT_SECRET,
-    options
+    options,
   );
 }
 
@@ -94,7 +94,7 @@ export type UserWithoutPassword = {
 };
 
 export function excludePassword<T extends { hashedPassword: string }>(
-  user: T
+  user: T,
 ): Omit<T, "hashedPassword"> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { hashedPassword: _, ...userWithoutPassword } = user;

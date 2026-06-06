@@ -36,8 +36,8 @@ export function DeleteContactDialog({
             </Dialog.Header>
             <Dialog.Body>
               <Text>
-                Are you sure you want to delete the contact &quot;{contact.organisation}&quot;?
-                This action cannot be undone.
+                Are you sure you want to delete the contact &quot;
+                {contact.organisation}&quot;? This action cannot be undone.
               </Text>
             </Dialog.Body>
             <Dialog.Footer>

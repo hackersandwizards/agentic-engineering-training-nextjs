@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  Flex,
-  Menu,
-  Portal,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Menu, Portal, Text } from "@chakra-ui/react";
 import { useAuth } from "@/lib/client/useAuth";
 
 export function Navbar() {

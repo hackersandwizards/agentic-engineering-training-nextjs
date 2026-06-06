@@ -105,7 +105,9 @@ export function EditUserDialog({
                   </Field.Root>
 
                   <Field.Root>
-                    <Field.Label>New Password (leave blank to keep)</Field.Label>
+                    <Field.Label>
+                      New Password (leave blank to keep)
+                    </Field.Label>
                     <Input
                       type="password"
                       {...register("password", {
@@ -117,7 +119,9 @@ export function EditUserDialog({
                       placeholder="Enter new password"
                     />
                     {errors.password && (
-                      <Field.ErrorText>{errors.password.message}</Field.ErrorText>
+                      <Field.ErrorText>
+                        {errors.password.message}
+                      </Field.ErrorText>
                     )}
                   </Field.Root>
 

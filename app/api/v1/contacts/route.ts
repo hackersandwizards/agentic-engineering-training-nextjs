@@ -1,6 +1,11 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAuth, errorResponse, successResponse, parseQueryParams } from "@/lib/api-utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+  parseQueryParams,
+} from "@/lib/api-utils";
 
 // GET /api/v1/contacts - List contacts
 export async function GET(request: NextRequest) {

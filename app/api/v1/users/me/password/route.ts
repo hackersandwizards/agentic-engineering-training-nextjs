@@ -1,7 +1,12 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/auth";
-import { requireAuth, errorResponse, successResponse, validatePassword } from "@/lib/api-utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+  validatePassword,
+} from "@/lib/api-utils";
 
 // PATCH /api/v1/users/me/password - Change password
 export async function PATCH(request: NextRequest) {
@@ -15,13 +20,16 @@ export async function PATCH(request: NextRequest) {
     const { current_password, new_password } = body;
 
     if (!current_password || !new_password) {
-      return errorResponse(400, "Current password and new password are required");
+      return errorResponse(
+        400,
+        "Current password and new password are required",
+      );
     }
 
     // Verify current password
     const isCurrentPasswordValid = await verifyPassword(
       current_password,
-      result.user.hashedPassword
+      result.user.hashedPassword,
     );
     if (!isCurrentPasswordValid) {
       return errorResponse(400, "Incorrect password");
@@ -35,7 +43,10 @@ export async function PATCH(request: NextRequest) {
 
     // Check that new password is different
     if (current_password === new_password) {
-      return errorResponse(400, "New password cannot be the same as the current one");
+      return errorResponse(
+        400,
+        "New password cannot be the same as the current one",
+      );
     }
 
     const hashedNewPassword = await hashPassword(new_password);

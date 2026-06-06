@@ -108,7 +108,9 @@ export default function SignupPage() {
                 })}
               />
               {errors.confirmPassword && (
-                <Field.ErrorText>{errors.confirmPassword.message}</Field.ErrorText>
+                <Field.ErrorText>
+                  {errors.confirmPassword.message}
+                </Field.ErrorText>
               )}
             </Field.Root>
 

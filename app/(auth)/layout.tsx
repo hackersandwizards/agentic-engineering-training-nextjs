@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { isLoggedIn } from "@/lib/client/useAuth";
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
 
   useEffect(() => {

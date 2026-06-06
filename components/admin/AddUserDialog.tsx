@@ -93,7 +93,9 @@ export function AddUserDialog() {
                       placeholder="Enter password"
                     />
                     {errors.password && (
-                      <Field.ErrorText>{errors.password.message}</Field.ErrorText>
+                      <Field.ErrorText>
+                        {errors.password.message}
+                      </Field.ErrorText>
                     )}
                   </Field.Root>
 

@@ -36,9 +36,9 @@ export function DeleteUserDialog({
             </Dialog.Header>
             <Dialog.Body>
               <Text>
-                Are you sure you want to delete the user &quot;{user.email}&quot;?
-                This action cannot be undone and all their data will be permanently
-                removed.
+                Are you sure you want to delete the user &quot;{user.email}
+                &quot;? This action cannot be undone and all their data will be
+                permanently removed.
               </Text>
             </Dialog.Body>
             <Dialog.Footer>

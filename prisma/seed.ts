@@ -12,7 +12,8 @@ async function main() {
 
   // Create superuser
   const superuserEmail = process.env.FIRST_SUPERUSER_EMAIL || "dev@example.com";
-  const superuserPassword = process.env.FIRST_SUPERUSER_PASSWORD || "DevPassword";
+  const superuserPassword =
+    process.env.FIRST_SUPERUSER_PASSWORD || "DevPassword";
   const hashedPassword = await bcrypt.hash(superuserPassword, 10);
 
   const superuser = await prisma.user.upsert({

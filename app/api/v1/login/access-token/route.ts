@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authenticateUser, createAccessToken, excludePassword } from "@/lib/auth";
+import {
+  authenticateUser,
+  createAccessToken,
+  excludePassword,
+} from "@/lib/auth";
 import { errorResponse } from "@/lib/api-utils";
 
 export async function POST(request: NextRequest) {

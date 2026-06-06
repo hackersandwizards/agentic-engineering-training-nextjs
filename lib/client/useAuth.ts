@@ -15,7 +15,10 @@ export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading: isLoadingUser } = useQuery<UserPublic | null, Error>({
+  const { data: user, isLoading: isLoadingUser } = useQuery<
+    UserPublic | null,
+    Error
+  >({
     queryKey: ["currentUser"],
     queryFn: async () => {
       if (!isLoggedIn()) return null;
@@ -31,8 +34,11 @@ export const useAuth = () => {
   });
 
   const signUpMutation = useMutation({
-    mutationFn: (data: { email: string; password: string; full_name?: string }) =>
-      UsersApi.signup(data),
+    mutationFn: (data: {
+      email: string;
+      password: string;
+      full_name?: string;
+    }) => UsersApi.signup(data),
     onSuccess: () => {
       router.push("/login");
     },

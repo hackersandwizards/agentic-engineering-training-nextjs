@@ -129,7 +129,10 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     // Cannot delete yourself
     if (result.user.id === userId) {
-      return errorResponse(403, "Super users are not allowed to delete themselves");
+      return errorResponse(
+        403,
+        "Super users are not allowed to delete themselves",
+      );
     }
 
     const user = await prisma.user.findUnique({

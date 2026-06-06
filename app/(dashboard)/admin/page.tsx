@@ -110,9 +110,7 @@ export default function AdminPage() {
                     </Table.Cell>
                     <Table.Cell color="gray.600">{user.email}</Table.Cell>
                     <Table.Cell>
-                      <Badge
-                        colorScheme={user.isSuperuser ? "purple" : "gray"}
-                      >
+                      <Badge colorScheme={user.isSuperuser ? "purple" : "gray"}>
                         {user.isSuperuser ? "Admin" : "User"}
                       </Badge>
                     </Table.Cell>

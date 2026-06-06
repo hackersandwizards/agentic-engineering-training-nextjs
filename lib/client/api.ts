@@ -40,7 +40,8 @@ export interface LoginResponse {
 }
 
 function getAuthHeaders(): HeadersInit {
-  const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
   const headers: HeadersInit = {
     "Content-Type": "application/json",
   };
@@ -52,7 +53,9 @@ function getAuthHeaders(): HeadersInit {
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ detail: "An error occurred" }));
+    const error = await response
+      .json()
+      .catch(() => ({ detail: "An error occurred" }));
     throw new Error(error.detail || "An error occurred");
   }
   return response.json();
@@ -94,7 +97,10 @@ export const UsersApi = {
     return handleResponse<UserPublic>(response);
   },
 
-  async updateMe(data: { email?: string; full_name?: string }): Promise<UserPublic> {
+  async updateMe(data: {
+    email?: string;
+    full_name?: string;
+  }): Promise<UserPublic> {
     const response = await fetch(`${API_BASE}/users/me`, {
       method: "PATCH",
       headers: getAuthHeaders(),
@@ -103,7 +109,10 @@ export const UsersApi = {
     return handleResponse<UserPublic>(response);
   },
 
-  async changePassword(data: { current_password: string; new_password: string }): Promise<void> {
+  async changePassword(data: {
+    current_password: string;
+    new_password: string;
+  }): Promise<void> {
     const response = await fetch(`${API_BASE}/users/me/password`, {
       method: "PATCH",
       headers: getAuthHeaders(),
@@ -120,7 +129,11 @@ export const UsersApi = {
     return handleResponse<void>(response);
   },
 
-  async signup(data: { email: string; password: string; full_name?: string }): Promise<UserPublic> {
+  async signup(data: {
+    email: string;
+    password: string;
+    full_name?: string;
+  }): Promise<UserPublic> {
     const response = await fetch(`${API_BASE}/users/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -130,9 +143,12 @@ export const UsersApi = {
   },
 
   async list(skip = 0, limit = 100): Promise<PaginatedResponse<UserPublic>> {
-    const response = await fetch(`${API_BASE}/users?skip=${skip}&limit=${limit}`, {
-      headers: getAuthHeaders(),
-    });
+    const response = await fetch(
+      `${API_BASE}/users?skip=${skip}&limit=${limit}`,
+      {
+        headers: getAuthHeaders(),
+      },
+    );
     return handleResponse<PaginatedResponse<UserPublic>>(response);
   },
 
@@ -165,7 +181,7 @@ export const UsersApi = {
       full_name?: string;
       is_superuser?: boolean;
       is_active?: boolean;
-    }
+    },
   ): Promise<UserPublic> {
     const response = await fetch(`${API_BASE}/users/${userId}`, {
       method: "PATCH",
@@ -187,13 +203,19 @@ export const UsersApi = {
 // Contacts API
 export const ContactsApi = {
   async list(skip = 0, limit = 100): Promise<PaginatedResponse<Contact>> {
-    const response = await fetch(`${API_BASE}/contacts?skip=${skip}&limit=${limit}`, {
-      headers: getAuthHeaders(),
-    });
+    const response = await fetch(
+      `${API_BASE}/contacts?skip=${skip}&limit=${limit}`,
+      {
+        headers: getAuthHeaders(),
+      },
+    );
     return handleResponse<PaginatedResponse<Contact>>(response);
   },
 
-  async create(data: { organisation: string; description?: string }): Promise<Contact> {
+  async create(data: {
+    organisation: string;
+    description?: string;
+  }): Promise<Contact> {
     const response = await fetch(`${API_BASE}/contacts`, {
       method: "POST",
       headers: getAuthHeaders(),
@@ -211,7 +233,7 @@ export const ContactsApi = {
 
   async update(
     contactId: string,
-    data: { organisation?: string; description?: string }
+    data: { organisation?: string; description?: string },
   ): Promise<Contact> {
     const response = await fetch(`${API_BASE}/contacts/${contactId}`, {
       method: "PUT",

@@ -84,7 +84,7 @@ export default function SettingsPage() {
             <Box bg="white" p={6} borderRadius="lg" boxShadow="sm" mt={4}>
               <form
                 onSubmit={userInfoForm.handleSubmit((data) =>
-                  updateUserMutation.mutate(data)
+                  updateUserMutation.mutate(data),
                 )}
               >
                 <Stack gap={4} maxW="md">
@@ -131,7 +131,7 @@ export default function SettingsPage() {
                   changePasswordMutation.mutate({
                     current_password: data.current_password,
                     new_password: data.new_password,
-                  })
+                  }),
                 )}
               >
                 <Stack gap={4} maxW="md">
@@ -225,8 +225,8 @@ export default function SettingsPage() {
                   Delete Account
                 </Heading>
                 <Text color="gray.600">
-                  Once you delete your account, there is no going back. Please be
-                  certain.
+                  Once you delete your account, there is no going back. Please
+                  be certain.
                 </Text>
                 {user?.isSuperuser ? (
                   <Text color="gray.500" fontSize="sm">
@@ -248,7 +248,10 @@ export default function SettingsPage() {
         </Tabs.Root>
       </Stack>
 
-      <Dialog.Root open={deleteOpen} onOpenChange={(e) => setDeleteOpen(e.open)}>
+      <Dialog.Root
+        open={deleteOpen}
+        onOpenChange={(e) => setDeleteOpen(e.open)}
+      >
         <Portal>
           <Dialog.Backdrop />
           <Dialog.Positioner>
@@ -258,8 +261,9 @@ export default function SettingsPage() {
               </Dialog.Header>
               <Dialog.Body>
                 <Text>
-                  Are you sure you want to delete your account? This action cannot
-                  be undone and all your data will be permanently removed.
+                  Are you sure you want to delete your account? This action
+                  cannot be undone and all your data will be permanently
+                  removed.
                 </Text>
               </Dialog.Body>
               <Dialog.Footer>

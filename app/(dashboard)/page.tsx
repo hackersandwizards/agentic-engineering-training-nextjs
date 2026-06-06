@@ -18,17 +18,13 @@ export default function DashboardPage() {
           </Text>
         </Box>
 
-        <Box
-          bg="white"
-          p={6}
-          borderRadius="lg"
-          boxShadow="sm"
-        >
+        <Box bg="white" p={6} borderRadius="lg" boxShadow="sm">
           <Heading size="md" mb={4}>
             Quick Stats
           </Heading>
           <Text color="gray.600">
-            Use the sidebar to navigate to different sections of the application.
+            Use the sidebar to navigate to different sections of the
+            application.
           </Text>
         </Box>
       </Stack>

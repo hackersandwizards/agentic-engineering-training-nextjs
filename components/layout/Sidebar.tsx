@@ -24,7 +24,7 @@ export function Sidebar() {
   const { user } = useAuth();
 
   const filteredItems = navItems.filter(
-    (item) => !item.adminOnly || user?.isSuperuser
+    (item) => !item.adminOnly || user?.isSuperuser,
   );
 
   return (

@@ -1,7 +1,12 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import { excludePassword } from "@/lib/auth";
-import { requireAuth, errorResponse, successResponse, validateEmail } from "@/lib/api-utils";
+import {
+  requireAuth,
+  errorResponse,
+  successResponse,
+  validateEmail,
+} from "@/lib/api-utils";
 
 // GET /api/v1/users/me - Get current user
 export async function GET(request: NextRequest) {
@@ -74,7 +79,10 @@ export async function DELETE(request: NextRequest) {
 
     // Superusers cannot delete themselves
     if (result.user.isSuperuser) {
-      return errorResponse(403, "Super users are not allowed to delete themselves");
+      return errorResponse(
+        403,
+        "Super users are not allowed to delete themselves",
+      );
     }
 
     await prisma.user.delete({

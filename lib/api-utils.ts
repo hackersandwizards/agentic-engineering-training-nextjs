@@ -5,7 +5,7 @@ import type { User } from "@prisma/client";
 export class ApiError extends Error {
   constructor(
     public statusCode: number,
-    message: string
+    message: string,
   ) {
     super(message);
     this.name = "ApiError";
@@ -14,7 +14,7 @@ export class ApiError extends Error {
 
 export function errorResponse(
   statusCode: number,
-  message: string
+  message: string,
 ): NextResponse {
   return NextResponse.json({ detail: message }, { status: statusCode });
 }
@@ -24,7 +24,7 @@ export function successResponse<T>(data: T, statusCode = 200): NextResponse {
 }
 
 export async function getAuthenticatedUser(
-  request: NextRequest
+  request: NextRequest,
 ): Promise<User | null> {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -36,7 +36,7 @@ export async function getAuthenticatedUser(
 }
 
 export async function requireAuth(
-  request: NextRequest
+  request: NextRequest,
 ): Promise<{ user: User } | { error: NextResponse }> {
   const user = await getAuthenticatedUser(request);
   if (!user) {
@@ -46,14 +46,16 @@ export async function requireAuth(
 }
 
 export async function requireSuperuser(
-  request: NextRequest
+  request: NextRequest,
 ): Promise<{ user: User } | { error: NextResponse }> {
   const result = await requireAuth(request);
   if ("error" in result) {
     return result;
   }
   if (!result.user.isSuperuser) {
-    return { error: errorResponse(403, "The user doesn't have enough privileges") };
+    return {
+      error: errorResponse(403, "The user doesn't have enough privileges"),
+    };
   }
   return result;
 }

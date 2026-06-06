@@ -30,8 +30,7 @@ export function AddContactDialog() {
   } = useForm<AddContactFormData>();
 
   const mutation = useMutation({
-    mutationFn: (data: AddContactFormData) =>
-      ContactsApi.create(data),
+    mutationFn: (data: AddContactFormData) => ContactsApi.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["contacts"] });
       setOpen(false);
@@ -65,13 +64,16 @@ export function AddContactDialog() {
                         required: "Organisation is required",
                         maxLength: {
                           value: 255,
-                          message: "Organisation must be at most 255 characters",
+                          message:
+                            "Organisation must be at most 255 characters",
                         },
                       })}
                       placeholder="Enter organisation name"
                     />
                     {errors.organisation && (
-                      <Field.ErrorText>{errors.organisation.message}</Field.ErrorText>
+                      <Field.ErrorText>
+                        {errors.organisation.message}
+                      </Field.ErrorText>
                     )}
                   </Field.Root>
 

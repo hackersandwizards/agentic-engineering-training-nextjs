@@ -17,7 +17,7 @@ function createTestQueryClient() {
 
 function customRender(
   ui: ReactElement,
-  options?: Omit<RenderOptions, "wrapper">
+  options?: Omit<RenderOptions, "wrapper">,
 ) {
   const queryClient = createTestQueryClient();
 

@@ -69,14 +69,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const body = await request.json();
     const { organisation, description } = body;
 
-    const updateData: { organisation?: string; description?: string | null } = {};
+    const updateData: { organisation?: string; description?: string | null } =
+      {};
 
     if (organisation !== undefined) {
       if (!organisation) {
         return errorResponse(400, "Organisation cannot be empty");
       }
       if (organisation.length > 255) {
-        return errorResponse(400, "Organisation must be at most 255 characters");
+        return errorResponse(
+          400,
+          "Organisation must be at most 255 characters",
+        );
       }
       updateData.organisation = organisation;
     }
