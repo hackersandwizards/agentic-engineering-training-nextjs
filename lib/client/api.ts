@@ -39,16 +39,10 @@ export interface LoginResponse {
   user: UserPublic;
 }
 
-function getAuthHeaders(): HeadersInit {
+function authHeader(): Record<string, string> {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-  };
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-  return headers;
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 async function handleResponse<T>(response: Response): Promise<T> {
@@ -61,119 +55,99 @@ async function handleResponse<T>(response: Response): Promise<T> {
   return response.json();
 }
 
+// Shared JSON request: attaches the bearer token (when present), serializes the
+// body, and unwraps errors. Endpoints that need a non-JSON body (login) build
+// their own request.
+async function apiRequest<T>(
+  endpoint: string,
+  options: { method?: string; body?: unknown } = {},
+): Promise<T> {
+  const { method = "GET", body } = options;
+  const response = await fetch(`${API_BASE}${endpoint}`, {
+    method,
+    headers: { "Content-Type": "application/json", ...authHeader() },
+    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+  });
+  return handleResponse<T>(response);
+}
+
 // Auth API
 export const AuthApi = {
   async login(email: string, password: string): Promise<LoginResponse> {
+    // OAuth2 password flow expects form-encoded credentials.
     const formData = new URLSearchParams();
     formData.append("username", email);
     formData.append("password", password);
 
     const response = await fetch(`${API_BASE}/login/access-token`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData,
     });
 
     return handleResponse<LoginResponse>(response);
   },
 
-  async testToken(): Promise<UserPublic> {
-    const response = await fetch(`${API_BASE}/login/test-token`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-    });
-    return handleResponse<UserPublic>(response);
+  testToken(): Promise<UserPublic> {
+    return apiRequest<UserPublic>("/login/test-token", { method: "POST" });
   },
 };
 
 // Users API
 export const UsersApi = {
-  async getMe(): Promise<UserPublic> {
-    const response = await fetch(`${API_BASE}/users/me`, {
-      headers: getAuthHeaders(),
-    });
-    return handleResponse<UserPublic>(response);
+  getMe(): Promise<UserPublic> {
+    return apiRequest<UserPublic>("/users/me");
   },
 
-  async updateMe(data: {
-    email?: string;
-    full_name?: string;
-  }): Promise<UserPublic> {
-    const response = await fetch(`${API_BASE}/users/me`, {
-      method: "PATCH",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(data),
-    });
-    return handleResponse<UserPublic>(response);
+  updateMe(data: { email?: string; full_name?: string }): Promise<UserPublic> {
+    return apiRequest<UserPublic>("/users/me", { method: "PATCH", body: data });
   },
 
-  async changePassword(data: {
+  changePassword(data: {
     current_password: string;
     new_password: string;
   }): Promise<void> {
-    const response = await fetch(`${API_BASE}/users/me/password`, {
+    return apiRequest<void>("/users/me/password", {
       method: "PATCH",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      body: data,
     });
-    return handleResponse<void>(response);
   },
 
-  async deleteMe(): Promise<void> {
-    const response = await fetch(`${API_BASE}/users/me`, {
-      method: "DELETE",
-      headers: getAuthHeaders(),
-    });
-    return handleResponse<void>(response);
+  deleteMe(): Promise<void> {
+    return apiRequest<void>("/users/me", { method: "DELETE" });
   },
 
-  async signup(data: {
+  signup(data: {
     email: string;
     password: string;
     full_name?: string;
   }): Promise<UserPublic> {
-    const response = await fetch(`${API_BASE}/users/signup`, {
+    return apiRequest<UserPublic>("/users/signup", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: data,
     });
-    return handleResponse<UserPublic>(response);
   },
 
-  async list(skip = 0, limit = 100): Promise<PaginatedResponse<UserPublic>> {
-    const response = await fetch(
-      `${API_BASE}/users?skip=${skip}&limit=${limit}`,
-      {
-        headers: getAuthHeaders(),
-      },
+  list(skip = 0, limit = 100): Promise<PaginatedResponse<UserPublic>> {
+    return apiRequest<PaginatedResponse<UserPublic>>(
+      `/users?skip=${skip}&limit=${limit}`,
     );
-    return handleResponse<PaginatedResponse<UserPublic>>(response);
   },
 
-  async create(data: {
+  create(data: {
     email: string;
     password: string;
     full_name?: string;
     is_superuser?: boolean;
   }): Promise<UserPublic> {
-    const response = await fetch(`${API_BASE}/users`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(data),
-    });
-    return handleResponse<UserPublic>(response);
+    return apiRequest<UserPublic>("/users", { method: "POST", body: data });
   },
 
-  async get(userId: string): Promise<UserPublic> {
-    const response = await fetch(`${API_BASE}/users/${userId}`, {
-      headers: getAuthHeaders(),
-    });
-    return handleResponse<UserPublic>(response);
+  get(userId: string): Promise<UserPublic> {
+    return apiRequest<UserPublic>(`/users/${userId}`);
   },
 
-  async update(
+  update(
     userId: string,
     data: {
       email?: string;
@@ -183,71 +157,47 @@ export const UsersApi = {
       is_active?: boolean;
     },
   ): Promise<UserPublic> {
-    const response = await fetch(`${API_BASE}/users/${userId}`, {
+    return apiRequest<UserPublic>(`/users/${userId}`, {
       method: "PATCH",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      body: data,
     });
-    return handleResponse<UserPublic>(response);
   },
 
-  async delete(userId: string): Promise<void> {
-    const response = await fetch(`${API_BASE}/users/${userId}`, {
-      method: "DELETE",
-      headers: getAuthHeaders(),
-    });
-    return handleResponse<void>(response);
+  delete(userId: string): Promise<void> {
+    return apiRequest<void>(`/users/${userId}`, { method: "DELETE" });
   },
 };
 
 // Contacts API
 export const ContactsApi = {
-  async list(skip = 0, limit = 100): Promise<PaginatedResponse<Contact>> {
-    const response = await fetch(
-      `${API_BASE}/contacts?skip=${skip}&limit=${limit}`,
-      {
-        headers: getAuthHeaders(),
-      },
+  list(skip = 0, limit = 100): Promise<PaginatedResponse<Contact>> {
+    return apiRequest<PaginatedResponse<Contact>>(
+      `/contacts?skip=${skip}&limit=${limit}`,
     );
-    return handleResponse<PaginatedResponse<Contact>>(response);
   },
 
-  async create(data: {
+  create(data: {
     organisation: string;
     description?: string;
   }): Promise<Contact> {
-    const response = await fetch(`${API_BASE}/contacts`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(data),
-    });
-    return handleResponse<Contact>(response);
+    return apiRequest<Contact>("/contacts", { method: "POST", body: data });
   },
 
-  async get(contactId: string): Promise<Contact> {
-    const response = await fetch(`${API_BASE}/contacts/${contactId}`, {
-      headers: getAuthHeaders(),
-    });
-    return handleResponse<Contact>(response);
+  get(contactId: string): Promise<Contact> {
+    return apiRequest<Contact>(`/contacts/${contactId}`);
   },
 
-  async update(
+  update(
     contactId: string,
     data: { organisation?: string; description?: string },
   ): Promise<Contact> {
-    const response = await fetch(`${API_BASE}/contacts/${contactId}`, {
+    return apiRequest<Contact>(`/contacts/${contactId}`, {
       method: "PUT",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      body: data,
     });
-    return handleResponse<Contact>(response);
   },
 
-  async delete(contactId: string): Promise<void> {
-    const response = await fetch(`${API_BASE}/contacts/${contactId}`, {
-      method: "DELETE",
-      headers: getAuthHeaders(),
-    });
-    return handleResponse<void>(response);
+  delete(contactId: string): Promise<void> {
+    return apiRequest<void>(`/contacts/${contactId}`, { method: "DELETE" });
   },
 };
