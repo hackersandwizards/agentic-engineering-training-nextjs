@@ -22,19 +22,18 @@ import { AddUserDialog } from "@/components/admin/AddUserDialog";
 import { EditUserDialog } from "@/components/admin/EditUserDialog";
 import { DeleteUserDialog } from "@/components/admin/DeleteUserDialog";
 import { queryKeys } from "@/lib/client/queryKeys";
-
-const PAGE_SIZE = 5;
+import { usePagination, PAGE_SIZE } from "@/lib/client/usePagination";
 
 export default function AdminPage() {
   const router = useRouter();
   const { user: currentUser } = useAuth();
-  const [page, setPage] = useState(0);
+  const { page, skip, limit, prev, next } = usePagination();
   const [editUser, setEditUser] = useState<UserPublic | null>(null);
   const [deleteUser, setDeleteUser] = useState<UserPublic | null>(null);
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: queryKeys.usersPage(page),
-    queryFn: () => UsersApi.list(page * PAGE_SIZE, PAGE_SIZE),
+    queryFn: () => UsersApi.list(skip, limit),
     enabled: !!currentUser?.isSuperuser,
   });
 
@@ -168,7 +167,7 @@ export default function AdminPage() {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                onClick={prev}
                 disabled={page === 0}
               >
                 Previous
@@ -179,7 +178,7 @@ export default function AdminPage() {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                onClick={() => next(totalPages)}
                 disabled={page >= totalPages - 1}
               >
                 Next

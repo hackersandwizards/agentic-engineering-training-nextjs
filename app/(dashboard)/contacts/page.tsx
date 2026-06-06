@@ -19,17 +19,16 @@ import { AddContactDialog } from "@/components/contacts/AddContactDialog";
 import { EditContactDialog } from "@/components/contacts/EditContactDialog";
 import { DeleteContactDialog } from "@/components/contacts/DeleteContactDialog";
 import { queryKeys } from "@/lib/client/queryKeys";
-
-const PAGE_SIZE = 5;
+import { usePagination, PAGE_SIZE } from "@/lib/client/usePagination";
 
 export default function ContactsPage() {
-  const [page, setPage] = useState(0);
+  const { page, skip, limit, prev, next } = usePagination();
   const [editContact, setEditContact] = useState<Contact | null>(null);
   const [deleteContact, setDeleteContact] = useState<Contact | null>(null);
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: queryKeys.contactsPage(page),
-    queryFn: () => ContactsApi.list(page * PAGE_SIZE, PAGE_SIZE),
+    queryFn: () => ContactsApi.list(skip, limit),
   });
 
   const contacts = data?.data || [];
@@ -132,7 +131,7 @@ export default function ContactsPage() {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                onClick={prev}
                 disabled={page === 0}
               >
                 Previous
@@ -143,7 +142,7 @@ export default function ContactsPage() {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                onClick={() => next(totalPages)}
                 disabled={page >= totalPages - 1}
               >
                 Next
