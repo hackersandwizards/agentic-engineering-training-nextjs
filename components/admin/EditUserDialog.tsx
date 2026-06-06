@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
 import { UsersApi, type UserPublic } from "@/lib/client/api";
+import { validateEmail } from "@/lib/validation";
 
 interface EditUserFormData {
   email: string;
@@ -95,10 +96,8 @@ export function EditUserDialog({
                       type="email"
                       {...register("email", {
                         required: "Email is required",
-                        pattern: {
-                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                          message: "Invalid email address",
-                        },
+                        validate: (value) =>
+                          validateEmail(value) || "Invalid email address",
                       })}
                     />
                     {errors.email && (

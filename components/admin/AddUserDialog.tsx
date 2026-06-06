@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { useState } from "react";
 import { UsersApi } from "@/lib/client/api";
+import { validateEmail } from "@/lib/validation";
 
 interface AddUserFormData {
   email: string;
@@ -69,10 +70,8 @@ export function AddUserDialog() {
                       type="email"
                       {...register("email", {
                         required: "Email is required",
-                        pattern: {
-                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                          message: "Invalid email address",
-                        },
+                        validate: (value) =>
+                          validateEmail(value) || "Invalid email address",
                       })}
                       placeholder="Enter email"
                     />

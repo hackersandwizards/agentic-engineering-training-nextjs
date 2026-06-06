@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { UsersApi } from "@/lib/client/api";
 import { useAuth } from "@/lib/client/useAuth";
+import { validateEmail } from "@/lib/validation";
 
 interface UserInfoFormData {
   email: string;
@@ -90,10 +91,8 @@ export default function SettingsPage() {
                     <Input
                       {...userInfoForm.register("email", {
                         required: "Email is required",
-                        pattern: {
-                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                          message: "Invalid email address",
-                        },
+                        validate: (value) =>
+                          validateEmail(value) || "Invalid email address",
                       })}
                     />
                     {userInfoForm.formState.errors.email && (

@@ -101,17 +101,4 @@ export function parseQueryParams(request: NextRequest) {
   return { skip, limit: Math.min(limit, 100) };
 }
 
-export function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
-export function validatePassword(password: string): string | null {
-  if (password.length < 8) {
-    return "Password must be at least 8 characters";
-  }
-  if (password.length > 40) {
-    return "Password must be at most 40 characters";
-  }
-  return null;
-}
+export { validateEmail, validatePassword } from "./validation";
