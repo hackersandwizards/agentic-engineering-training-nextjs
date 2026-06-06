@@ -46,8 +46,8 @@ export function DataTable<T extends { id: string }>({
       <Table.Root>
         <Table.Header>
           <Table.Row>
-            {columns.map((column) => (
-              <Table.ColumnHeader key={column.header} width={column.width}>
+            {columns.map((column, columnIndex) => (
+              <Table.ColumnHeader key={columnIndex} width={column.width}>
                 {column.header}
               </Table.ColumnHeader>
             ))}
@@ -57,8 +57,8 @@ export function DataTable<T extends { id: string }>({
           {isLoading ? (
             Array.from({ length: PAGE_SIZE }).map((_, rowIndex) => (
               <Table.Row key={rowIndex}>
-                {columns.map((column) => (
-                  <Table.Cell key={column.header}>
+                {columns.map((_, columnIndex) => (
+                  <Table.Cell key={columnIndex}>
                     <Skeleton height="20px" />
                   </Table.Cell>
                 ))}

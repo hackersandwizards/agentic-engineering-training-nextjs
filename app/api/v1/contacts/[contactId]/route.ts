@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { contactOwnerInclude } from "@/lib/auth";
 import {
@@ -8,28 +9,33 @@ import {
   assertOwnerOrSuperuser,
 } from "@/lib/api-utils";
 import { contactUpdateSchema } from "@/lib/schemas";
+import { type User } from "@prisma/client";
 
 type RouteContext = { params: Promise<{ contactId: string }> };
+
+async function loadContactForUser(contactId: string, user: User) {
+  const contact = await prisma.contact.findUnique({
+    where: { id: contactId },
+    include: contactOwnerInclude,
+  });
+  if (!contact) {
+    return errorResponse(404, "Contact not found");
+  }
+  const permissionError = assertOwnerOrSuperuser(contact.ownerId, user);
+  if (permissionError) {
+    return permissionError;
+  }
+  return contact;
+}
 
 export const GET = withAuth<RouteContext>(
   async (request, user, { params }) => {
     const { contactId } = await params;
-
-    const contact = await prisma.contact.findUnique({
-      where: { id: contactId },
-      include: contactOwnerInclude,
-    });
-
-    if (!contact) {
-      return errorResponse(404, "Contact not found");
+    const result = await loadContactForUser(contactId, user);
+    if (result instanceof NextResponse) {
+      return result;
     }
-
-    const permissionError = assertOwnerOrSuperuser(contact.ownerId, user);
-    if (permissionError) {
-      return permissionError;
-    }
-
-    return successResponse(contact);
+    return successResponse(result);
   },
   { errorLabel: "Get contact error:" },
 );
@@ -37,18 +43,9 @@ export const GET = withAuth<RouteContext>(
 export const PUT = withAuth<RouteContext>(
   async (request, user, { params }) => {
     const { contactId } = await params;
-
-    const contact = await prisma.contact.findUnique({
-      where: { id: contactId },
-    });
-
-    if (!contact) {
-      return errorResponse(404, "Contact not found");
-    }
-
-    const permissionError = assertOwnerOrSuperuser(contact.ownerId, user);
-    if (permissionError) {
-      return permissionError;
+    const result = await loadContactForUser(contactId, user);
+    if (result instanceof NextResponse) {
+      return result;
     }
 
     const parsed = await parseBody(request, contactUpdateSchema);
@@ -82,18 +79,9 @@ export const PUT = withAuth<RouteContext>(
 export const DELETE = withAuth<RouteContext>(
   async (request, user, { params }) => {
     const { contactId } = await params;
-
-    const contact = await prisma.contact.findUnique({
-      where: { id: contactId },
-    });
-
-    if (!contact) {
-      return errorResponse(404, "Contact not found");
-    }
-
-    const permissionError = assertOwnerOrSuperuser(contact.ownerId, user);
-    if (permissionError) {
-      return permissionError;
+    const result = await loadContactForUser(contactId, user);
+    if (result instanceof NextResponse) {
+      return result;
     }
 
     await prisma.contact.delete({

@@ -109,6 +109,18 @@ export default function SettingsPage() {
                     <Input {...userInfoForm.register("full_name")} />
                   </Field.Root>
 
+                  {updateUserMutation.isError && (
+                    <Text color="red.500" fontSize="sm">
+                      {(updateUserMutation.error as Error).message}
+                    </Text>
+                  )}
+
+                  {updateUserMutation.isSuccess && (
+                    <Text color="green.500" fontSize="sm">
+                      Profile updated successfully!
+                    </Text>
+                  )}
+
                   <Button
                     type="submit"
                     colorScheme="blue"
