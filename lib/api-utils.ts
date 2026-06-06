@@ -111,6 +111,13 @@ export function isUniqueConstraintError(error: unknown): boolean {
   );
 }
 
+export function isNotFoundError(error: unknown): boolean {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError &&
+    error.code === "P2025"
+  );
+}
+
 export function parseQueryParams(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const skip = parseNonNegativeInt(searchParams.get("skip"), 0);
@@ -138,6 +145,9 @@ export function withAuth<C extends RouteContext = RouteContext>(
       }
       return await handler(request, result.user, context);
     } catch (error) {
+      if (isNotFoundError(error)) {
+        return errorResponse(404, "Resource not found");
+      }
       console.error(options.errorLabel ?? "Request error", error);
       return errorResponse(500, "Internal server error");
     }
