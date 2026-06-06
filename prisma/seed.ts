@@ -7,128 +7,91 @@ const connectionString = process.env.DATABASE_URL || "file:./prisma/dev.db";
 const adapter = new PrismaBetterSqlite3({ url: connectionString });
 const prisma = new PrismaClient({ adapter });
 
+interface SeedContact {
+  organisation: string;
+  description: string;
+}
+
+async function seedUser(
+  email: string,
+  password: string,
+  fullName: string,
+  isSuperuser: boolean,
+) {
+  const user = await prisma.user.upsert({
+    where: { email },
+    update: {},
+    create: {
+      email,
+      hashedPassword: await bcrypt.hash(password, 10),
+      fullName,
+      isActive: true,
+      isSuperuser,
+    },
+  });
+  console.log(`Created user: ${user.email}`);
+  return user;
+}
+
+async function seedContacts(
+  owner: { id: string; email: string },
+  contacts: SeedContact[],
+) {
+  for (const contact of contacts) {
+    const existing = await prisma.contact.findFirst({
+      where: { organisation: contact.organisation, ownerId: owner.id },
+    });
+    if (!existing) {
+      await prisma.contact.create({
+        data: {
+          organisation: contact.organisation,
+          description: contact.description,
+          ownerId: owner.id,
+        },
+      });
+    }
+  }
+  console.log(`Created ${contacts.length} contacts for ${owner.email}`);
+}
+
 async function main() {
   console.log("Seeding database...");
 
-  const superuserEmail = process.env.FIRST_SUPERUSER_EMAIL || "dev@example.com";
-  const superuserPassword =
-    process.env.FIRST_SUPERUSER_PASSWORD || "DevPassword";
-  const hashedPassword = await bcrypt.hash(superuserPassword, 10);
+  const superuser = await seedUser(
+    process.env.FIRST_SUPERUSER_EMAIL || "dev@example.com",
+    process.env.FIRST_SUPERUSER_PASSWORD || "DevPassword",
+    "Dev Admin",
+    true,
+  );
+  const alice = await seedUser(
+    "alice@example.com",
+    "AlicePassword123",
+    "Alice Johnson",
+    false,
+  );
+  const bob = await seedUser(
+    "bob@example.com",
+    "BobPassword123",
+    "Bob Smith",
+    false,
+  );
 
-  const superuser = await prisma.user.upsert({
-    where: { email: superuserEmail },
-    update: {},
-    create: {
-      email: superuserEmail,
-      hashedPassword,
-      fullName: "Dev Admin",
-      isActive: true,
-      isSuperuser: true,
-    },
-  });
-  console.log(`Created superuser: ${superuser.email}`);
-
-  const alice = await prisma.user.upsert({
-    where: { email: "alice@example.com" },
-    update: {},
-    create: {
-      email: "alice@example.com",
-      hashedPassword: await bcrypt.hash("AlicePassword123", 10),
-      fullName: "Alice Johnson",
-      isActive: true,
-      isSuperuser: false,
-    },
-  });
-  console.log(`Created user: ${alice.email}`);
-
-  const bob = await prisma.user.upsert({
-    where: { email: "bob@example.com" },
-    update: {},
-    create: {
-      email: "bob@example.com",
-      hashedPassword: await bcrypt.hash("BobPassword123", 10),
-      fullName: "Bob Smith",
-      isActive: true,
-      isSuperuser: false,
-    },
-  });
-  console.log(`Created user: ${bob.email}`);
-
-  const superuserContacts = [
+  await seedContacts(superuser, [
     { organisation: "OpenAI", description: "AI research company" },
     { organisation: "Anthropic", description: "AI safety company" },
     { organisation: "Google DeepMind", description: "AI research lab" },
     { organisation: "Meta AI", description: "AI research division" },
     { organisation: "Microsoft Research", description: "Technology research" },
-  ];
-
-  for (const contact of superuserContacts) {
-    const existingContact = await prisma.contact.findFirst({
-      where: {
-        organisation: contact.organisation,
-        ownerId: superuser.id,
-      },
-    });
-    if (!existingContact) {
-      await prisma.contact.create({
-        data: {
-          organisation: contact.organisation,
-          description: contact.description,
-          ownerId: superuser.id,
-        },
-      });
-    }
-  }
-  console.log(`Created ${superuserContacts.length} contacts for superuser`);
-
-  const aliceContacts = [
+  ]);
+  await seedContacts(alice, [
     { organisation: "Acme Corp", description: "Manufacturing company" },
     { organisation: "TechStart Inc", description: "Startup accelerator" },
-  ];
-
-  for (const contact of aliceContacts) {
-    const existingContact = await prisma.contact.findFirst({
-      where: {
-        organisation: contact.organisation,
-        ownerId: alice.id,
-      },
-    });
-    if (!existingContact) {
-      await prisma.contact.create({
-        data: {
-          organisation: contact.organisation,
-          description: contact.description,
-          ownerId: alice.id,
-        },
-      });
-    }
-  }
-  console.log(`Created ${aliceContacts.length} contacts for Alice`);
-
-  const bobContacts = [
+  ]);
+  await seedContacts(bob, [
     { organisation: "DataFlow Systems", description: "Data analytics" },
     { organisation: "CloudNine Hosting", description: "Cloud infrastructure" },
     { organisation: "SecureNet", description: "Cybersecurity services" },
-  ];
-
-  for (const contact of bobContacts) {
-    const existingContact = await prisma.contact.findFirst({
-      where: {
-        organisation: contact.organisation,
-        ownerId: bob.id,
-      },
-    });
-    if (!existingContact) {
-      await prisma.contact.create({
-        data: {
-          organisation: contact.organisation,
-          description: contact.description,
-          ownerId: bob.id,
-        },
-      });
-    }
-  }
-  console.log(`Created ${bobContacts.length} contacts for Bob`);
+  ]);
 
   console.log("Seeding completed!");
 }
