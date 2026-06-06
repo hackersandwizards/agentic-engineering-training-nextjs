@@ -18,6 +18,7 @@ import { ContactsApi, type Contact } from "@/lib/client/api";
 import { AddContactDialog } from "@/components/contacts/AddContactDialog";
 import { EditContactDialog } from "@/components/contacts/EditContactDialog";
 import { DeleteContactDialog } from "@/components/contacts/DeleteContactDialog";
+import { Pagination } from "@/components/Pagination";
 import { queryKeys } from "@/lib/client/queryKeys";
 import { usePagination, PAGE_SIZE } from "@/lib/client/usePagination";
 
@@ -126,29 +127,12 @@ export default function ContactsPage() {
             </Table.Body>
           </Table.Root>
 
-          {totalPages > 1 && (
-            <Flex justify="center" p={4} gap={2}>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={prev}
-                disabled={page === 0}
-              >
-                Previous
-              </Button>
-              <Text alignSelf="center" color="gray.600">
-                Page {page + 1} of {totalPages}
-              </Text>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => next(totalPages)}
-                disabled={page >= totalPages - 1}
-              >
-                Next
-              </Button>
-            </Flex>
-          )}
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPrev={prev}
+            onNext={() => next(totalPages)}
+          />
         </Box>
       </Stack>
 

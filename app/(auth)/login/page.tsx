@@ -13,7 +13,7 @@ import {
 import { useForm } from "react-hook-form";
 import NextLink from "next/link";
 import { useAuth } from "@/lib/client/useAuth";
-import { validateEmail } from "@/lib/validation";
+import { emailRules } from "@/lib/validation";
 
 interface LoginFormData {
   email: string;
@@ -50,11 +50,7 @@ export default function LoginPage() {
               <Input
                 type="email"
                 placeholder="Enter your email"
-                {...register("email", {
-                  required: "Email is required",
-                  validate: (value) =>
-                    validateEmail(value) || "Invalid email address",
-                })}
+                {...register("email", emailRules)}
               />
               {errors.email && (
                 <Field.ErrorText>{errors.email.message}</Field.ErrorText>

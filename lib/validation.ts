@@ -15,3 +15,8 @@ export function validatePassword(password: string): string | null {
   const result = passwordSchema.safeParse(password);
   return result.success ? null : (result.error.issues[0]?.message ?? null);
 }
+
+export const emailRules = {
+  required: "Email is required",
+  validate: (value: string) => validateEmail(value) || "Invalid email address",
+};

@@ -21,6 +21,7 @@ import { useAuth } from "@/lib/client/useAuth";
 import { AddUserDialog } from "@/components/admin/AddUserDialog";
 import { EditUserDialog } from "@/components/admin/EditUserDialog";
 import { DeleteUserDialog } from "@/components/admin/DeleteUserDialog";
+import { Pagination } from "@/components/Pagination";
 import { queryKeys } from "@/lib/client/queryKeys";
 import { usePagination, PAGE_SIZE } from "@/lib/client/usePagination";
 
@@ -162,29 +163,12 @@ export default function AdminPage() {
             </Table.Body>
           </Table.Root>
 
-          {totalPages > 1 && (
-            <Flex justify="center" p={4} gap={2}>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={prev}
-                disabled={page === 0}
-              >
-                Previous
-              </Button>
-              <Text alignSelf="center" color="gray.600">
-                Page {page + 1} of {totalPages}
-              </Text>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => next(totalPages)}
-                disabled={page >= totalPages - 1}
-              >
-                Next
-              </Button>
-            </Flex>
-          )}
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPrev={prev}
+            onNext={() => next(totalPages)}
+          />
         </Box>
       </Stack>
 

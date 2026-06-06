@@ -1,13 +1,14 @@
 "use client";
 
-import { Checkbox, Field, Input } from "@chakra-ui/react";
+import { Field, Input } from "@chakra-ui/react";
 import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { UsersApi, type UserPublic } from "@/lib/client/api";
-import { validateEmail } from "@/lib/validation";
+import { emailRules } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
 import { FormDialog } from "@/components/FormDialog";
+import { CheckboxField } from "@/components/CheckboxField";
 
 interface EditUserFormData {
   email: string;
@@ -84,14 +85,7 @@ export function EditUserDialog({
     >
       <Field.Root invalid={!!errors.email}>
         <Field.Label>Email</Field.Label>
-        <Input
-          type="email"
-          {...register("email", {
-            required: "Email is required",
-            validate: (value) =>
-              validateEmail(value) || "Invalid email address",
-          })}
-        />
+        <Input type="email" {...register("email", emailRules)} />
         {errors.email && (
           <Field.ErrorText>{errors.email.message}</Field.ErrorText>
         )}
@@ -119,35 +113,9 @@ export function EditUserDialog({
         <Input {...register("full_name")} />
       </Field.Root>
 
-      <Controller
-        name="is_superuser"
-        control={control}
-        render={({ field }) => (
-          <Checkbox.Root
-            checked={field.value}
-            onCheckedChange={(e) => field.onChange(e.checked === true)}
-          >
-            <Checkbox.HiddenInput onBlur={field.onBlur} />
-            <Checkbox.Control />
-            <Checkbox.Label>Super user</Checkbox.Label>
-          </Checkbox.Root>
-        )}
-      />
+      <CheckboxField control={control} name="is_superuser" label="Super user" />
 
-      <Controller
-        name="is_active"
-        control={control}
-        render={({ field }) => (
-          <Checkbox.Root
-            checked={field.value}
-            onCheckedChange={(e) => field.onChange(e.checked === true)}
-          >
-            <Checkbox.HiddenInput onBlur={field.onBlur} />
-            <Checkbox.Control />
-            <Checkbox.Label>Active</Checkbox.Label>
-          </Checkbox.Root>
-        )}
-      />
+      <CheckboxField control={control} name="is_active" label="Active" />
     </FormDialog>
   );
 }

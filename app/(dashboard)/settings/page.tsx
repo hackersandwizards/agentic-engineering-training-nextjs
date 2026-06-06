@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { UsersApi } from "@/lib/client/api";
 import { useAuth } from "@/lib/client/useAuth";
-import { validateEmail } from "@/lib/validation";
+import { emailRules } from "@/lib/validation";
 import { queryKeys } from "@/lib/client/queryKeys";
 import { useMutationWithInvalidation } from "@/lib/client/useMutationWithInvalidation";
 
@@ -87,13 +87,7 @@ export default function SettingsPage() {
                 <Stack gap={4} maxW="md">
                   <Field.Root invalid={!!userInfoForm.formState.errors.email}>
                     <Field.Label>Email</Field.Label>
-                    <Input
-                      {...userInfoForm.register("email", {
-                        required: "Email is required",
-                        validate: (value) =>
-                          validateEmail(value) || "Invalid email address",
-                      })}
-                    />
+                    <Input {...userInfoForm.register("email", emailRules)} />
                     {userInfoForm.formState.errors.email && (
                       <Field.ErrorText>
                         {userInfoForm.formState.errors.email.message}
