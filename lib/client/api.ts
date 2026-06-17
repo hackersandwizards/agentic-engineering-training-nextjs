@@ -87,8 +87,8 @@ export const AuthApi = {
 };
 
 export const UsersApi = {
-  getMe(): Promise<UserPublic> {
-    return apiRequest<UserPublic>("/users/me");
+  getSession(): Promise<UserPublic | null> {
+    return apiRequest<UserPublic | null>("/session");
   },
 
   updateMe(data: { email?: string; full_name?: string }): Promise<UserPublic> {

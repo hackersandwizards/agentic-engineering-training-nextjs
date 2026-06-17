@@ -40,7 +40,7 @@ export async function parseBody<T>(
   return { data: result.data };
 }
 
-async function getAuthenticatedUser(
+export async function getAuthenticatedUser(
   request: NextRequest,
 ): Promise<User | null> {
   const authHeader = request.headers.get("Authorization");

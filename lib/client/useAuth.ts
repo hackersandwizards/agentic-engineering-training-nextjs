@@ -16,13 +16,7 @@ export const useAuth = () => {
     Error
   >({
     queryKey: queryKeys.currentUser,
-    queryFn: async () => {
-      try {
-        return await UsersApi.getMe();
-      } catch {
-        return null;
-      }
-    },
+    queryFn: () => UsersApi.getSession(),
     retry: false,
   });
 
