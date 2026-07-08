@@ -7,6 +7,9 @@ const connectionString = process.env.DATABASE_URL || "file:./prisma/dev.db";
 const adapter = new PrismaBetterSqlite3({ url: connectionString });
 const prisma = new PrismaClient({ adapter });
 
+const BULK_CONTACTS = Number(process.env.SEED_CONTACTS ?? 30000);
+const BATCH = 2000;
+
 interface SeedContact {
   organisation: string;
   description: string;
@@ -54,6 +57,36 @@ async function seedContacts(
   console.log(`Created ${contacts.length} contacts for ${owner.email}`);
 }
 
+// Give one non-superuser a large contact set so the unindexed owner_id filter
+// and created_at sort in GET /api/v1/contacts become measurably slow.
+async function seedBulkContacts(
+  owner: { id: string; email: string },
+  total: number,
+) {
+  const existing = await prisma.contact.count({ where: { ownerId: owner.id } });
+  if (existing >= total) {
+    console.log(
+      `Bulk contacts already present for ${owner.email} (${existing}), skipping`,
+    );
+    return;
+  }
+  const toCreate = total - existing;
+  console.log(`Bulk-seeding ${toCreate} contacts for ${owner.email}...`);
+  for (let created = 0; created < toCreate; created += BATCH) {
+    const n = Math.min(BATCH, toCreate - created);
+    const data = Array.from({ length: n }, (_, i) => {
+      const idx = existing + created + i;
+      return {
+        organisation: `Contact Org ${idx}`,
+        description: `Auto-generated contact #${idx}`,
+        ownerId: owner.id,
+      };
+    });
+    await prisma.contact.createMany({ data });
+    console.log(`  ${Math.min(created + n, toCreate)}/${toCreate}`);
+  }
+}
+
 async function main() {
   console.log("Seeding database...");
 
@@ -92,6 +125,8 @@ async function main() {
     { organisation: "CloudNine Hosting", description: "Cloud infrastructure" },
     { organisation: "SecureNet", description: "Cybersecurity services" },
   ]);
+
+  await seedBulkContacts(alice, BULK_CONTACTS);
 
   console.log("Seeding completed!");
 }
