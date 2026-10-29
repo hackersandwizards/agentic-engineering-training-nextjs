@@ -95,7 +95,7 @@ check needs a token, sent as `Authorization: Bearer <token>` or as the
 
 ```text
 POST   /login/access-token     # { "username": "dev@example.com", "password": "DevPassword" }
-                               # -> { "access_token": "...", "token_type": "Bearer" }
+                               # -> { "access_token": "...", "token_type": "bearer", "user": {...} }
 POST   /login/test-token       # verify a token
 POST   /logout                 # clear the access_token cookie
 GET    /health-check           # -> { "status": "ok" }
