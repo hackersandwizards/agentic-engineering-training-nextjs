@@ -7,8 +7,9 @@ Form, Prisma 7 on SQLite and TypeScript 6 in strict mode.
 
 ## Run it
 
-You need Node.js 20 or newer (checked on 2026-10-29 with Node 26 and npm 12). The repo is
-npm-only: a `preinstall` guard stops yarn, pnpm and bun.
+You need Node.js 20.19, 22.12, or 24 and newer, the range Prisma accepts
+(checked on 2026-10-29 with Node 26 and npm 12). The repo is npm-only: a
+`preinstall` guard stops yarn, pnpm and bun.
 
 ```bash
 npm install                                  # dependencies
