@@ -46,8 +46,8 @@ export const useAuth = () => {
   const loginMutation = useMutation({
     mutationFn: (data: { email: string; password: string }) =>
       AuthApi.login(data.email, data.password),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.currentUser });
+    onSuccess: (data) => {
+      queryClient.setQueryData(queryKeys.currentUser, data.user);
       router.push("/");
     },
     onError: (err: Error) => {

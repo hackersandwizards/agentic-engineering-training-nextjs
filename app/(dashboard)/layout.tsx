@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Navbar } from "@/components/layout/Navbar";
+import { AuthApi } from "@/lib/client/api";
 import { useAuth } from "@/lib/client/useAuth";
 
 export default function DashboardLayout({
@@ -17,7 +18,9 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (!isLoadingUser && !user) {
-      router.push("/login");
+      // Clear a cookie the API rejects (expired, or its user is gone after
+      // db:reset); proxy.ts would otherwise send /login straight back here.
+      void AuthApi.logout().finally(() => router.push("/login"));
     }
   }, [isLoadingUser, user, router]);
 
