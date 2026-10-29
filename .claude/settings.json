@@ -12,5 +12,19 @@
         "path": "."
       }
     }
+  },
+  "claudeMdExcludes": [
+    "/Users/*/.claude/rules/**",
+    "/home/*/.claude/rules/**"
+  ],
+  "skillOverrides": {
+    "agent-feedback": "off",
+    "architecture-principles": "off",
+    "claude-accounts": "off",
+    "delegation": "off",
+    "engineering": "off",
+    "polish": "off",
+    "shell-tools": "off",
+    "voice": "off"
   }
 }
