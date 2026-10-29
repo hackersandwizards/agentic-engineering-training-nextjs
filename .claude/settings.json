@@ -1,4 +1,5 @@
 {
+  "subagentPromptCacheTtl": "1h",
   "enabledPlugins": {
     "skill-creator@claude-plugins-official": false,
     "build-pipeline@hackersandwizards": false,
