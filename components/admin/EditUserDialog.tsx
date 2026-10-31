@@ -95,7 +95,7 @@ export function EditUserDialog({
         )}
       </Field.Root>
 
-      <Field.Root>
+      <Field.Root invalid={!!errors.password}>
         <Field.Label>New password (leave blank to keep)</Field.Label>
         <Input
           type="password"
