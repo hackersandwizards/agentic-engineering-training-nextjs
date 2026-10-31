@@ -121,4 +121,4 @@ DELETE /contacts/{id}          # delete
 
 ## License
 
-For training purposes only, see [LICENSE](LICENSE).
+PolyForm Noncommercial License 1.0.0, see [LICENSE](LICENSE).
