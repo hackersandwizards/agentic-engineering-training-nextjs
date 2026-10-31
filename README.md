@@ -67,10 +67,6 @@ one, `npm run test` prints "No test files found" and still passes (exit code 0).
   The parentheses keep the variable inside that one run, so a later
   `npm run dev` still uses `dev.db`.
 
-- Git hooks are configured in `lefthook.yml` but not installed. Turn them on
-  with `npx lefthook install`: `pre-commit` then runs ESLint `--fix` and
-  Prettier on staged files, `pre-push` the type check.
-
 Every script is in `package.json`. Dependencies are pinned exactly, and `.npmrc`
 keeps new ones pinned.
 
