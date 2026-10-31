@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Providers } from "./providers";
+import "./brand.css";
 
 export const metadata: Metadata = {
   title: "CRM - Contact Management",

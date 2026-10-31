@@ -69,17 +69,26 @@ export default function SettingsPage() {
   return (
     <Box>
       <Stack gap={6}>
-        <Heading size="xl">Settings</Heading>
+        <Heading as="h1" size="2xl">
+          Settings
+        </Heading>
 
-        <Tabs.Root defaultValue="profile">
+        <Tabs.Root defaultValue="profile" colorPalette="teal">
           <Tabs.List>
             <Tabs.Trigger value="profile">Profile</Tabs.Trigger>
             <Tabs.Trigger value="password">Password</Tabs.Trigger>
-            <Tabs.Trigger value="danger">Danger Zone</Tabs.Trigger>
+            <Tabs.Trigger value="danger">Delete account</Tabs.Trigger>
           </Tabs.List>
 
           <Tabs.Content value="profile">
-            <Box bg="white" p={6} borderRadius="lg" boxShadow="sm" mt={4}>
+            <Box
+              bg="bg.panel"
+              p={6}
+              borderWidth="1px"
+              borderRadius="l3"
+              boxShadow="sm"
+              mt={4}
+            >
               <form
                 onSubmit={userInfoForm.handleSubmit((data) =>
                   updateUserMutation.mutate(data),
@@ -97,29 +106,29 @@ export default function SettingsPage() {
                   </Field.Root>
 
                   <Field.Root>
-                    <Field.Label>Full Name</Field.Label>
+                    <Field.Label>Full name</Field.Label>
                     <Input {...userInfoForm.register("full_name")} />
                   </Field.Root>
 
                   {updateUserMutation.isError && (
-                    <Text color="red.500" fontSize="sm">
+                    <Text color="fg.error" fontSize="sm">
                       {(updateUserMutation.error as Error).message}
                     </Text>
                   )}
 
                   {updateUserMutation.isSuccess && (
-                    <Text color="green.500" fontSize="sm">
+                    <Text color="fg.success" fontSize="sm">
                       Profile updated successfully!
                     </Text>
                   )}
 
                   <Button
                     type="submit"
-                    colorScheme="blue"
+                    colorPalette="teal"
                     alignSelf="flex-start"
                     loading={updateUserMutation.isPending}
                   >
-                    Save Changes
+                    Save changes
                   </Button>
                 </Stack>
               </form>
@@ -127,7 +136,14 @@ export default function SettingsPage() {
           </Tabs.Content>
 
           <Tabs.Content value="password">
-            <Box bg="white" p={6} borderRadius="lg" boxShadow="sm" mt={4}>
+            <Box
+              bg="bg.panel"
+              p={6}
+              borderWidth="1px"
+              borderRadius="l3"
+              boxShadow="sm"
+              mt={4}
+            >
               <form
                 onSubmit={passwordForm.handleSubmit((data) =>
                   changePasswordMutation.mutate({
@@ -140,7 +156,7 @@ export default function SettingsPage() {
                   <Field.Root
                     invalid={!!passwordForm.formState.errors.current_password}
                   >
-                    <Field.Label>Current Password</Field.Label>
+                    <Field.Label>Current password</Field.Label>
                     <Input
                       type="password"
                       {...passwordForm.register("current_password", {
@@ -157,7 +173,7 @@ export default function SettingsPage() {
                   <Field.Root
                     invalid={!!passwordForm.formState.errors.new_password}
                   >
-                    <Field.Label>New Password</Field.Label>
+                    <Field.Label>New password</Field.Label>
                     <Input
                       type="password"
                       {...passwordForm.register("new_password", passwordRules)}
@@ -172,7 +188,7 @@ export default function SettingsPage() {
                   <Field.Root
                     invalid={!!passwordForm.formState.errors.confirm_password}
                   >
-                    <Field.Label>Confirm New Password</Field.Label>
+                    <Field.Label>Confirm new password</Field.Label>
                     <Input
                       type="password"
                       {...passwordForm.register("confirm_password", {
@@ -190,24 +206,24 @@ export default function SettingsPage() {
                   </Field.Root>
 
                   {changePasswordMutation.isError && (
-                    <Text color="red.500" fontSize="sm">
+                    <Text color="fg.error" fontSize="sm">
                       {(changePasswordMutation.error as Error).message}
                     </Text>
                   )}
 
                   {changePasswordMutation.isSuccess && (
-                    <Text color="green.500" fontSize="sm">
+                    <Text color="fg.success" fontSize="sm">
                       Password changed successfully!
                     </Text>
                   )}
 
                   <Button
                     type="submit"
-                    colorScheme="blue"
+                    colorPalette="teal"
                     alignSelf="flex-start"
                     loading={changePasswordMutation.isPending}
                   >
-                    Change Password
+                    Change password
                   </Button>
                 </Stack>
               </form>
@@ -215,27 +231,34 @@ export default function SettingsPage() {
           </Tabs.Content>
 
           <Tabs.Content value="danger">
-            <Box bg="white" p={6} borderRadius="lg" boxShadow="sm" mt={4}>
+            <Box
+              bg="bg.panel"
+              p={6}
+              borderWidth="1px"
+              borderRadius="l3"
+              boxShadow="sm"
+              mt={4}
+            >
               <Stack gap={4}>
-                <Heading size="md" color="red.500">
-                  Delete Account
+                <Heading size="md" color="fg.error">
+                  Delete account
                 </Heading>
-                <Text color="gray.600">
+                <Text color="fg.muted">
                   Once you delete your account, there is no going back. Please
                   be certain.
                 </Text>
                 {user?.isSuperuser ? (
-                  <Text color="gray.500" fontSize="sm">
+                  <Text color="fg.muted" fontSize="sm">
                     Super users cannot delete their own account.
                   </Text>
                 ) : (
                   <Button
-                    colorScheme="red"
+                    colorPalette="red"
                     variant="outline"
                     alignSelf="flex-start"
                     onClick={() => setDeleteOpen(true)}
                   >
-                    Delete My Account
+                    Delete my account
                   </Button>
                 )}
               </Stack>
@@ -247,9 +270,9 @@ export default function SettingsPage() {
       <GenericDeleteDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        title="Delete Account"
+        title="Delete account"
         description="Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed."
-        confirmLabel="Delete Account"
+        confirmLabel="Delete account"
         onDelete={() => UsersApi.deleteMe()}
         onSuccess={logout}
       />

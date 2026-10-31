@@ -40,12 +40,12 @@ export function GenericDeleteDialog({
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>{title}</Dialog.Title>
+              <Dialog.Title fontFamily="heading">{title}</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
               <Text>{description}</Text>
               {mutation.isError && (
-                <Text color="red.500" fontSize="sm" mt={3}>
+                <Text color="fg.error" fontSize="sm" mt={3}>
                   {(mutation.error as Error).message}
                 </Text>
               )}
@@ -55,7 +55,7 @@ export function GenericDeleteDialog({
                 <Button variant="ghost">Cancel</Button>
               </Dialog.ActionTrigger>
               <Button
-                colorScheme="red"
+                colorPalette="red"
                 onClick={() => mutation.mutate()}
                 loading={mutation.isPending}
               >

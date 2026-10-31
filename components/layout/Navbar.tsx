@@ -7,33 +7,32 @@ export function Navbar() {
   const { user, logout } = useAuth();
 
   return (
-    <Box
-      as="header"
-      bg="white"
-      borderBottom="1px"
-      borderColor="gray.200"
-      px={6}
-      py={4}
-    >
-      <Flex justify="space-between" align="center">
-        <Text fontSize="lg" fontWeight="semibold" color="gray.700">
-          Contact Management
+    <Box as="header" bg="bg.panel" borderBottomWidth="1px">
+      <Box h="3px" bgImage="var(--gradient-magic)" />
+      <Flex
+        justify="space-between"
+        align="center"
+        px={{ base: 4, md: 6 }}
+        h="14"
+      >
+        <Text fontFamily="heading" fontSize="lg" fontWeight="bold">
+          CRM
         </Text>
 
         <Menu.Root>
           <Menu.Trigger asChild>
             <Button variant="ghost" size="sm">
-              {user?.fullName || user?.email || "User"}
+              {user?.fullName || user?.email || "Account"}
             </Button>
           </Menu.Trigger>
           <Portal>
             <Menu.Positioner>
               <Menu.Content>
-                <Menu.Item value="email" disabled>
-                  <Text fontSize="sm" color="gray.500">
+                <Menu.ItemGroup>
+                  <Menu.ItemGroupLabel fontWeight="normal" color="fg.muted">
                     {user?.email}
-                  </Text>
-                </Menu.Item>
+                  </Menu.ItemGroupLabel>
+                </Menu.ItemGroup>
                 <Menu.Separator />
                 <Menu.Item value="logout" onClick={logout}>
                   Sign out

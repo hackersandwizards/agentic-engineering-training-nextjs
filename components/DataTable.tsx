@@ -42,51 +42,59 @@ export function DataTable<T extends { id: string }>({
   const colSpan = columns.length;
 
   return (
-    <Box bg="white" borderRadius="lg" boxShadow="sm" overflow="hidden">
-      <Table.Root>
-        <Table.Header>
-          <Table.Row>
-            {columns.map((column, columnIndex) => (
-              <Table.ColumnHeader key={columnIndex} width={column.width}>
-                {column.header}
-              </Table.ColumnHeader>
-            ))}
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {isLoading ? (
-            Array.from({ length: PAGE_SIZE }).map((_, rowIndex) => (
-              <Table.Row key={rowIndex}>
-                {columns.map((_, columnIndex) => (
-                  <Table.Cell key={columnIndex}>
-                    <Skeleton height="20px" />
-                  </Table.Cell>
-                ))}
+    <Box
+      bg="bg.panel"
+      borderWidth="1px"
+      borderRadius="l3"
+      boxShadow="sm"
+      overflow="hidden"
+    >
+      <Table.ScrollArea>
+        <Table.Root>
+          <Table.Header>
+            <Table.Row>
+              {columns.map((column, columnIndex) => (
+                <Table.ColumnHeader key={columnIndex} width={column.width}>
+                  {column.header}
+                </Table.ColumnHeader>
+              ))}
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {isLoading ? (
+              Array.from({ length: PAGE_SIZE }).map((_, rowIndex) => (
+                <Table.Row key={rowIndex}>
+                  {columns.map((_, columnIndex) => (
+                    <Table.Cell key={columnIndex}>
+                      <Skeleton height="20px" />
+                    </Table.Cell>
+                  ))}
+                </Table.Row>
+              ))
+            ) : isError ? (
+              <Table.Row>
+                <Table.Cell colSpan={colSpan}>
+                  <Text textAlign="center" color="fg.error" py={4}>
+                    {errorMessage}: {error?.message}
+                  </Text>
+                </Table.Cell>
               </Table.Row>
-            ))
-          ) : isError ? (
-            <Table.Row>
-              <Table.Cell colSpan={colSpan}>
-                <Text textAlign="center" color="red.500" py={4}>
-                  {errorMessage}: {error?.message}
-                </Text>
-              </Table.Cell>
-            </Table.Row>
-          ) : items.length === 0 ? (
-            <Table.Row>
-              <Table.Cell colSpan={colSpan}>
-                <Text textAlign="center" color="gray.500" py={4}>
-                  {emptyMessage}
-                </Text>
-              </Table.Cell>
-            </Table.Row>
-          ) : (
-            items.map((item) => (
-              <Table.Row key={item.id}>{renderRow(item)}</Table.Row>
-            ))
-          )}
-        </Table.Body>
-      </Table.Root>
+            ) : items.length === 0 ? (
+              <Table.Row>
+                <Table.Cell colSpan={colSpan}>
+                  <Text textAlign="center" color="fg.muted" py={4}>
+                    {emptyMessage}
+                  </Text>
+                </Table.Cell>
+              </Table.Row>
+            ) : (
+              items.map((item) => (
+                <Table.Row key={item.id}>{renderRow(item)}</Table.Row>
+              ))
+            )}
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollArea>
 
       <Pagination
         page={page}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Flex, Link, Stack, Text } from "@chakra-ui/react";
+import { Flex, Link } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/client/useAuth";
@@ -8,17 +8,17 @@ import { useAuth } from "@/lib/client/useAuth";
 interface NavItem {
   name: string;
   path: string;
-  icon: string;
   adminOnly?: boolean;
 }
 
 const navItems: NavItem[] = [
-  { name: "Dashboard", path: "/", icon: "🏠" },
-  { name: "Contacts", path: "/contacts", icon: "👥" },
-  { name: "Admin", path: "/admin", icon: "⚙️", adminOnly: true },
-  { name: "Settings", path: "/settings", icon: "🔧" },
+  { name: "Dashboard", path: "/" },
+  { name: "Contacts", path: "/contacts" },
+  { name: "Admin", path: "/admin", adminOnly: true },
+  { name: "Settings", path: "/settings" },
 ];
 
+// A sidebar from 768 px, a row of tabs under the header on a phone.
 export function Sidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
@@ -28,55 +28,49 @@ export function Sidebar() {
   );
 
   return (
-    <Box
-      as="aside"
-      w="250px"
-      bg="gray.800"
-      color="white"
-      minH="100vh"
-      py={6}
-      px={4}
+    <Flex
+      as="nav"
+      aria-label="Main"
+      direction={{ base: "row", md: "column" }}
+      gap={1}
+      w={{ base: "full", md: "56" }}
+      flexShrink={0}
+      p={{ base: 2, md: 4 }}
+      bg="bg.panel"
+      borderBottomWidth={{ base: "1px", md: "0" }}
+      borderRightWidth={{ base: "0", md: "1px" }}
     >
-      <Text fontSize="xl" fontWeight="bold" mb={8} px={4}>
-        CRM
-      </Text>
-
-      <Stack gap={2}>
-        {filteredItems.map((item) => {
-          const isActive = pathname === item.path;
-          return (
-            <Link
-              key={item.path}
-              asChild
-              _hover={{ textDecoration: "none" }}
-              _focus={{ outline: "none", boxShadow: "none" }}
-              _focusVisible={{ outline: "none", boxShadow: "none" }}
+      {filteredItems.map((item) => {
+        const isActive = pathname === item.path;
+        return (
+          <Link
+            key={item.path}
+            asChild
+            flex={{ base: 1, md: "none" }}
+            justifyContent={{ base: "center", md: "flex-start" }}
+            px={3}
+            py={2}
+            borderRadius="l2"
+            fontSize="sm"
+            fontWeight="medium"
+            textDecoration="none"
+            color={isActive ? "teal.fg" : "fg.muted"}
+            bg={isActive ? "teal.muted" : "transparent"}
+            _hover={{
+              textDecoration: "none",
+              color: isActive ? "teal.fg" : "fg",
+              bg: isActive ? "teal.muted" : "teal.subtle",
+            }}
+          >
+            <NextLink
+              href={item.path}
+              aria-current={isActive ? "page" : undefined}
             >
-              <NextLink href={item.path}>
-                <Flex
-                  align="center"
-                  px={4}
-                  py={3}
-                  borderRadius="md"
-                  bg={isActive ? "blue.600" : "transparent"}
-                  color="white"
-                  _hover={{ bg: isActive ? "blue.600" : "gray.700" }}
-                  _focus={{ outline: "none", boxShadow: "none" }}
-                  _focusVisible={{
-                    outline: "2px solid",
-                    outlineColor: "blue.400",
-                    outlineOffset: "2px",
-                  }}
-                  transition="background 0.2s"
-                >
-                  <Text mr={3}>{item.icon}</Text>
-                  <Text>{item.name}</Text>
-                </Flex>
-              </NextLink>
-            </Link>
-          );
-        })}
-      </Stack>
-    </Box>
+              {item.name}
+            </NextLink>
+          </Link>
+        );
+      })}
+    </Flex>
   );
 }

@@ -37,8 +37,10 @@ export default function LoginPage() {
     <Box>
       <Stack gap={6}>
         <Box textAlign="center">
-          <Heading size="xl">Welcome back</Heading>
-          <Text color="gray.600" mt={2}>
+          <Heading as="h1" size="2xl">
+            Welcome back
+          </Heading>
+          <Text color="fg.muted" mt={2}>
             Sign in to your account
           </Text>
         </Box>
@@ -72,14 +74,14 @@ export default function LoginPage() {
             </Field.Root>
 
             {error && (
-              <Text color="red.500" fontSize="sm">
+              <Text color="fg.error" fontSize="sm">
                 {error}
               </Text>
             )}
 
             <Button
               type="submit"
-              colorScheme="blue"
+              colorPalette="teal"
               size="lg"
               loading={isSubmitting || loginMutation.isPending}
               width="full"
@@ -89,9 +91,9 @@ export default function LoginPage() {
           </Stack>
         </form>
 
-        <Text textAlign="center" color="gray.600">
+        <Text textAlign="center" color="fg.muted">
           Don&apos;t have an account?{" "}
-          <Link asChild color="blue.500">
+          <Link asChild color="teal.fg">
             <NextLink href="/signup">Sign up</NextLink>
           </Link>
         </Text>

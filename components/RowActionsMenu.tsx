@@ -3,15 +3,20 @@
 import { Button, Menu, Portal } from "@chakra-ui/react";
 
 interface RowActionsMenuProps {
+  label: string;
   onEdit: () => void;
   onDelete?: () => void;
 }
 
-export function RowActionsMenu({ onEdit, onDelete }: RowActionsMenuProps) {
+export function RowActionsMenu({
+  label,
+  onEdit,
+  onDelete,
+}: RowActionsMenuProps) {
   return (
     <Menu.Root>
       <Menu.Trigger asChild>
-        <Button size="sm" variant="ghost">
+        <Button size="sm" variant="ghost" aria-label={`Actions for ${label}`}>
           •••
         </Button>
       </Menu.Trigger>
@@ -22,7 +27,7 @@ export function RowActionsMenu({ onEdit, onDelete }: RowActionsMenuProps) {
               Edit
             </Menu.Item>
             {onDelete && (
-              <Menu.Item value="delete" color="red.500" onClick={onDelete}>
+              <Menu.Item value="delete" color="fg.error" onClick={onDelete}>
                 Delete
               </Menu.Item>
             )}

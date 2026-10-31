@@ -19,7 +19,7 @@ export function DeleteContactDialog({
     <GenericDeleteDialog
       open={open}
       onOpenChange={onOpenChange}
-      title="Delete Contact"
+      title="Delete contact"
       description={`Are you sure you want to delete the contact "${contact.organisation}"? This action cannot be undone.`}
       invalidateKey={queryKeys.contacts}
       onDelete={() => ContactsApi.delete(contact.id)}

@@ -19,7 +19,7 @@ export function DeleteUserDialog({
     <GenericDeleteDialog
       open={open}
       onOpenChange={onOpenChange}
-      title="Delete User"
+      title="Delete user"
       description={`Are you sure you want to delete the user "${user.email}"? This action cannot be undone and all their data will be permanently removed.`}
       invalidateKey={queryKeys.users}
       onDelete={() => UsersApi.delete(user.id)}

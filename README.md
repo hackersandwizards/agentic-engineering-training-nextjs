@@ -77,6 +77,8 @@ keeps new ones pinned.
 app/(auth)/          login and signup pages
 app/(dashboard)/     contacts, admin and settings pages (logged in)
 app/api/v1/          REST API routes
+app/brand.css        colours, fonts, light and dark mode (Chakra reads them in
+                     app/providers.tsx)
 components/          layout, contact and admin dialogs, shared table and forms
 lib/                 Prisma client, JWT and password helpers, API helpers,
                      frontend API client and hooks (lib/client/)

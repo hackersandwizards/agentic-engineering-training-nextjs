@@ -24,7 +24,7 @@ export function Pagination({
       <Button size="sm" variant="ghost" onClick={onPrev} disabled={page === 0}>
         Previous
       </Button>
-      <Text alignSelf="center" color="gray.600">
+      <Text alignSelf="center" color="fg.muted" fontSize="sm">
         Page {page + 1} of {totalPages}
       </Text>
       <Button

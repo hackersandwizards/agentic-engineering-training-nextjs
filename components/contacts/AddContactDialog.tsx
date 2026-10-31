@@ -46,14 +46,14 @@ export function AddContactDialog() {
     <FormDialog
       open={open}
       onOpenChange={setOpen}
-      title="Add Contact"
+      title="Add contact"
       formId="add-contact-form"
       submitLabel="Add"
       onSubmit={handleSubmit(onSubmit)}
       isPending={mutation.isPending}
       isError={mutation.isError}
       error={mutation.error}
-      trigger={<Button colorScheme="blue">Add Contact</Button>}
+      trigger={<Button colorPalette="teal">Add contact</Button>}
     >
       <Field.Root invalid={!!errors.organisation}>
         <Field.Label>Organisation</Field.Label>

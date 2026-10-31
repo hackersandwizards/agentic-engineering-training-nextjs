@@ -52,7 +52,9 @@ export default function AdminPage() {
     <Box>
       <Stack gap={6}>
         <Flex justify="space-between" align="center">
-          <Heading size="xl">User Management</Heading>
+          <Heading as="h1" size="2xl">
+            Users
+          </Heading>
           <AddUserDialog />
         </Flex>
 
@@ -62,7 +64,7 @@ export default function AdminPage() {
             { header: "Email" },
             { header: "Role" },
             { header: "Status" },
-            { header: "Actions", width: "100px" },
+            { header: "Actions", width: "80px" },
           ]}
           items={users}
           isLoading={isLoading}
@@ -80,25 +82,26 @@ export default function AdminPage() {
                 <Flex align="center" gap={2}>
                   {user.fullName || "-"}
                   {user.id === currentUser?.id && (
-                    <Badge colorScheme="blue" size="sm">
+                    <Badge colorPalette="teal" size="sm">
                       You
                     </Badge>
                   )}
                 </Flex>
               </Table.Cell>
-              <Table.Cell color="gray.600">{user.email}</Table.Cell>
+              <Table.Cell color="fg.muted">{user.email}</Table.Cell>
               <Table.Cell>
-                <Badge colorScheme={user.isSuperuser ? "purple" : "gray"}>
+                <Badge colorPalette={user.isSuperuser ? "purple" : "gray"}>
                   {user.isSuperuser ? "Admin" : "User"}
                 </Badge>
               </Table.Cell>
               <Table.Cell>
-                <Badge colorScheme={user.isActive ? "green" : "red"}>
+                <Badge colorPalette={user.isActive ? "green" : "red"}>
                   {user.isActive ? "Active" : "Inactive"}
                 </Badge>
               </Table.Cell>
               <Table.Cell>
                 <RowActionsMenu
+                  label={user.fullName || user.email}
                   onEdit={() => setEditUser(user)}
                   onDelete={
                     user.id !== currentUser?.id

@@ -79,7 +79,7 @@ export function EditUserDialog({
     <FormDialog
       open={open}
       onOpenChange={onOpenChange}
-      title="Edit User"
+      title="Edit user"
       formId="edit-user-form"
       submitLabel="Save"
       onSubmit={handleSubmit(onSubmit)}
@@ -96,7 +96,7 @@ export function EditUserDialog({
       </Field.Root>
 
       <Field.Root>
-        <Field.Label>New Password (leave blank to keep)</Field.Label>
+        <Field.Label>New password (leave blank to keep)</Field.Label>
         <Input
           type="password"
           {...register("password", optionalPasswordRules)}
@@ -108,7 +108,7 @@ export function EditUserDialog({
       </Field.Root>
 
       <Field.Root>
-        <Field.Label>Full Name</Field.Label>
+        <Field.Label>Full name</Field.Label>
         <Input {...register("full_name")} />
       </Field.Root>
 

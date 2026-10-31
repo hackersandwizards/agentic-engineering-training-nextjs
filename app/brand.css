@@ -1,0 +1,86 @@
+/* hackers&wizards brand, copied once from @hackersandwizards/brand 0.9.16
+   (tokens/tokens.css and expert/expert.css). A delivery copy: edit it here.
+   Fonts: Inter and JetBrains Mono under the SIL Open Font License (app/fonts). */
+
+@font-face {
+  font-family: "Inter Variable";
+  src: url("./fonts/inter-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono Variable";
+  src: url("./fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 800;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+
+  --font-sans:
+    "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:
+    "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-sm: 5px;
+  --radius-brand: 20px 5px;
+  --shadow-card: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-overlay: 0 18px 46px rgb(25 40 58 / 0.1);
+  --gradient-magic: linear-gradient(135deg, #1a7285 0%, #9333ea 100%);
+
+  /* Light: bg, ink and muted from tokens.css, roles from expert.css. */
+  --background: #f7f9fa;
+  --surface: #ffffff;
+  --foreground: #19283a;
+  --foreground-muted: #545861;
+  --border: #d0d2d8;
+  --input: color-mix(in srgb, var(--foreground) 70%, var(--background));
+  --accent: #155b6a;
+  --on-accent: #ffffff;
+  --focus: #9333ea;
+  --error: color-mix(in srgb, #dc2626 70%, #19283a);
+  --success: color-mix(in srgb, #15803d 70%, #19283a);
+  --hue-purple: color-mix(in srgb, #9333ea 70%, #19283a);
+}
+
+/* Night: every colour takes its one night tone, teal stays the accent. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b1118;
+    --surface: #111a24;
+    --foreground: color-mix(in srgb, white 92%, #0b1118);
+    --foreground-muted: color-mix(in srgb, white 80%, #0b1118);
+    --border: color-mix(in srgb, white 15%, #0b1118);
+    --input: color-mix(in srgb, var(--foreground) 40%, var(--background));
+    --accent: #47aec6;
+    --on-accent: #0b1118;
+    --focus: #b97af1;
+    --error: #f26969;
+    --success: #4ade80;
+    --hue-purple: #b97af1;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Apple's 44 px touch target on a phone. Unlayered, so it wins over Chakra's layers. */
+@media (max-width: 47.99em) {
+  button,
+  input,
+  select,
+  [role="menuitem"],
+  nav a {
+    min-height: 44px;
+  }
+}

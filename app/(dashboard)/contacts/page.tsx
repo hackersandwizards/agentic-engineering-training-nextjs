@@ -37,7 +37,9 @@ export default function ContactsPage() {
     <Box>
       <Stack gap={6}>
         <Flex justify="space-between" align="center">
-          <Heading size="xl">Contacts</Heading>
+          <Heading as="h1" size="2xl">
+            Contacts
+          </Heading>
           <AddContactDialog />
         </Flex>
 
@@ -45,7 +47,7 @@ export default function ContactsPage() {
           columns={[
             { header: "Organisation" },
             { header: "Description" },
-            { header: "Actions", width: "100px" },
+            { header: "Actions", width: "80px" },
           ]}
           items={contacts}
           isLoading={isLoading}
@@ -62,11 +64,12 @@ export default function ContactsPage() {
               <Table.Cell fontWeight="medium">
                 {contact.organisation}
               </Table.Cell>
-              <Table.Cell color="gray.600">
+              <Table.Cell color="fg.muted">
                 {contact.description || "-"}
               </Table.Cell>
               <Table.Cell>
                 <RowActionsMenu
+                  label={contact.organisation}
                   onEdit={() => setEditContact(contact)}
                   onDelete={() => setDeleteContact(contact)}
                 />

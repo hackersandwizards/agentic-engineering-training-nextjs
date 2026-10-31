@@ -38,14 +38,14 @@ export function FormDialog({
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>{title}</Dialog.Title>
+              <Dialog.Title fontFamily="heading">{title}</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
               <form id={formId} onSubmit={onSubmit}>
                 <Stack gap={4}>
                   {children}
                   {isError && error && (
-                    <Text color="red.500" fontSize="sm">
+                    <Text color="fg.error" fontSize="sm">
                       {error.message}
                     </Text>
                   )}
@@ -59,7 +59,7 @@ export function FormDialog({
               <Button
                 type="submit"
                 form={formId}
-                colorScheme="blue"
+                colorPalette="teal"
                 loading={isPending}
               >
                 {submitLabel}

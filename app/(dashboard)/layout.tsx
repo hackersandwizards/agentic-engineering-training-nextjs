@@ -27,18 +27,20 @@ export default function DashboardLayout({
   if (isLoadingUser || !user) {
     return (
       <Center minH="100vh">
-        <Spinner size="xl" />
+        <Spinner size="xl" color="teal.fg" />
       </Center>
     );
   }
 
   return (
-    <Flex minH="100vh">
-      <Sidebar />
-      <Box flex={1} bg="gray.50">
-        <Navbar />
-        <Box p={6}>{children}</Box>
-      </Box>
+    <Flex direction="column" minH="100vh">
+      <Navbar />
+      <Flex direction={{ base: "column", md: "row" }} flex={1}>
+        <Sidebar />
+        <Box as="main" flex={1} minW={0} p={{ base: 4, md: 8 }}>
+          {children}
+        </Box>
+      </Flex>
     </Flex>
   );
 }

@@ -58,7 +58,7 @@ export function EditContactDialog({
     <FormDialog
       open={open}
       onOpenChange={onOpenChange}
-      title="Edit Contact"
+      title="Edit contact"
       formId="edit-contact-form"
       submitLabel="Save"
       onSubmit={handleSubmit(onSubmit)}

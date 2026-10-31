@@ -52,14 +52,14 @@ export function AddUserDialog() {
     <FormDialog
       open={open}
       onOpenChange={setOpen}
-      title="Add User"
+      title="Add user"
       formId="add-user-form"
       submitLabel="Add"
       onSubmit={handleSubmit(onSubmit)}
       isPending={mutation.isPending}
       isError={mutation.isError}
       error={mutation.error}
-      trigger={<Button colorScheme="blue">Add User</Button>}
+      trigger={<Button colorPalette="teal">Add user</Button>}
     >
       <Field.Root invalid={!!errors.email}>
         <Field.Label>Email</Field.Label>
@@ -86,7 +86,7 @@ export function AddUserDialog() {
       </Field.Root>
 
       <Field.Root>
-        <Field.Label>Full Name</Field.Label>
+        <Field.Label>Full name</Field.Label>
         <Input
           {...register("full_name")}
           placeholder="Enter full name (optional)"

@@ -44,8 +44,10 @@ export default function SignupPage() {
     <Box>
       <Stack gap={6}>
         <Box textAlign="center">
-          <Heading size="xl">Create an account</Heading>
-          <Text color="gray.600" mt={2}>
+          <Heading as="h1" size="2xl">
+            Create an account
+          </Heading>
+          <Text color="fg.muted" mt={2}>
             Sign up to get started
           </Text>
         </Box>
@@ -53,7 +55,7 @@ export default function SignupPage() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack gap={4}>
             <Field.Root invalid={!!errors.full_name}>
-              <Field.Label>Full Name</Field.Label>
+              <Field.Label>Full name</Field.Label>
               <Input
                 type="text"
                 placeholder="Enter your full name"
@@ -86,7 +88,7 @@ export default function SignupPage() {
             </Field.Root>
 
             <Field.Root invalid={!!errors.confirmPassword}>
-              <Field.Label>Confirm Password</Field.Label>
+              <Field.Label>Confirm password</Field.Label>
               <Input
                 type="password"
                 placeholder="Confirm your password"
@@ -104,14 +106,14 @@ export default function SignupPage() {
             </Field.Root>
 
             {error && (
-              <Text color="red.500" fontSize="sm">
+              <Text color="fg.error" fontSize="sm">
                 {error}
               </Text>
             )}
 
             <Button
               type="submit"
-              colorScheme="blue"
+              colorPalette="teal"
               size="lg"
               loading={isSubmitting || signUpMutation.isPending}
               width="full"
@@ -121,9 +123,9 @@ export default function SignupPage() {
           </Stack>
         </form>
 
-        <Text textAlign="center" color="gray.600">
+        <Text textAlign="center" color="fg.muted">
           Already have an account?{" "}
-          <Link asChild color="blue.500">
+          <Link asChild color="teal.fg">
             <NextLink href="/login">Sign in</NextLink>
           </Link>
         </Text>
