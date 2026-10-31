@@ -7,8 +7,8 @@ Form, Prisma 7 on SQLite and TypeScript 6 in strict mode.
 
 ## Run it
 
-You need Node.js 20.19, 22.12, or 24 and newer, the range Prisma accepts
-(checked on 2026-10-29 with Node 26 and npm 12). The repo is npm-only: a
+You need Node.js 22.22, 24.15, or 26 and newer, the range every dependency
+accepts (checked on 2026-10-31 with Node 26 and npm 12). The repo is npm-only: a
 `preinstall` guard stops yarn, pnpm and bun.
 
 ```bash
@@ -48,7 +48,8 @@ npm run test           # Vitest, single run
 `npx playwright install chromium`.
 
 The test harness is set up, but the specs come with the exercises. Until you add
-one, `npm run test` prints "No test files found" and still passes (exit code 0).
+one, `npm run test` prints "No test files found" and `npm run test:e2e` "No
+tests found", and both still pass (exit code 0).
 
 - Vitest (`vitest.config.mts`) has two projects: `node` for `lib/` and
   `app/api/`, and `components` (jsdom) for `components/` and `app/`. Put a test
