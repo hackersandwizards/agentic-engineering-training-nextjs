@@ -82,7 +82,8 @@ body {
   input,
   select,
   [role="menuitem"],
-  nav a {
+  nav a,
+  a.chakra-button {
     min-height: 44px;
   }
 }
