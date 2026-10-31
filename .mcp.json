@@ -3,7 +3,15 @@
     "chrome-devtools": {
       "command": "npx",
       "args": [
+        "-y",
+        "-p",
+        "@puppeteer/browsers@3.2.6",
+        "-p",
         "chrome-devtools-mcp@latest",
+        "node",
+        "-e",
+        "const{spawn}=require('child_process'),{existsSync}=require('fs'),{homedir}=require('os'),{join,delimiter}=require('path'),n=process.env.PATH.split(delimiter).map(function(d){return join(d,'..')}).find(function(d){return existsSync(join(d,'chrome-devtools-mcp','package.json'))}),B=require(join(n,'@puppeteer','browsers')),c=process.env.PUPPETEER_CACHE_DIR??join(homedir(),'.cache','puppeteer'),p=B.detectBrowserPlatform();B.getInstalledBrowsers({cacheDir:c}).then(async function(l){const b=l.filter(function(x){return x.browser=='chrome'}).filter(function(x){return x.platform==p}).sort(function(x,y){return x.buildId.localeCompare(y.buildId,'en',{numeric:true})}).at(-1)??await B.install({browser:'chrome',buildId:await B.resolveBuildId('chrome',p,'stable'),cacheDir:c}),m=spawn(process.execPath,[join(n,'chrome-devtools-mcp',require(join(n,'chrome-devtools-mcp','package.json')).bin['chrome-devtools-mcp']),...process.argv.slice(1),'--executablePath',b.executablePath],{stdio:'inherit'});for(const s of['SIGINT','SIGTERM'])process.on(s,function(){m.kill(s)});m.on('exit',function(e){process.exit(e??1)})})",
+        "--",
         "--headless",
         "--isolated",
         "--viewport=1920x1080",
