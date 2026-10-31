@@ -8,6 +8,7 @@ import { PAGE_SIZE } from "@/lib/client/usePagination";
 interface DataTableColumn {
   header: string;
   width?: string;
+  hideOnPhone?: boolean;
 }
 
 interface DataTableProps<T extends { id: string }> {
@@ -49,12 +50,16 @@ export function DataTable<T extends { id: string }>({
       boxShadow="sm"
       overflow="hidden"
     >
-      <Table.ScrollArea>
+      <Box overflowX="auto">
         <Table.Root>
           <Table.Header>
             <Table.Row>
               {columns.map((column, columnIndex) => (
-                <Table.ColumnHeader key={columnIndex} width={column.width}>
+                <Table.ColumnHeader
+                  key={columnIndex}
+                  width={column.width}
+                  hideBelow={column.hideOnPhone ? "md" : undefined}
+                >
                   {column.header}
                 </Table.ColumnHeader>
               ))}
@@ -64,8 +69,11 @@ export function DataTable<T extends { id: string }>({
             {isLoading ? (
               Array.from({ length: PAGE_SIZE }).map((_, rowIndex) => (
                 <Table.Row key={rowIndex}>
-                  {columns.map((_, columnIndex) => (
-                    <Table.Cell key={columnIndex}>
+                  {columns.map((column, columnIndex) => (
+                    <Table.Cell
+                      key={columnIndex}
+                      hideBelow={column.hideOnPhone ? "md" : undefined}
+                    >
                       <Skeleton height="20px" />
                     </Table.Cell>
                   ))}
@@ -94,7 +102,7 @@ export function DataTable<T extends { id: string }>({
             )}
           </Table.Body>
         </Table.Root>
-      </Table.ScrollArea>
+      </Box>
 
       <Pagination
         page={page}

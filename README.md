@@ -8,8 +8,8 @@ Form, Prisma 7 on SQLite and TypeScript 6 in strict mode.
 ## Run it
 
 You need Node.js 22.22, 24.15, or 26 and newer, the range every dependency
-accepts (checked on 2026-10-31 with Node 26 and npm 12). The repo is npm-only: a
-`preinstall` guard stops yarn, pnpm and bun.
+accepts (checked on 2026-10-31 with Node 26 and npm 12). The repo uses npm, and
+`package-lock.json` is its lockfile.
 
 ```bash
 npm install                                  # dependencies

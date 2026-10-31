@@ -34,7 +34,7 @@ export function FormDialog({
     <Dialog.Root open={open} onOpenChange={(e) => onOpenChange(e.open)}>
       {trigger && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
       <Portal>
-        <Dialog.Backdrop />
+        <Dialog.Backdrop bg="var(--backdrop)" />
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>

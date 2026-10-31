@@ -36,7 +36,7 @@ export function GenericDeleteDialog({
   return (
     <Dialog.Root open={open} onOpenChange={(e) => onOpenChange(e.open)}>
       <Portal>
-        <Dialog.Backdrop />
+        <Dialog.Backdrop bg="var(--backdrop)" />
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>

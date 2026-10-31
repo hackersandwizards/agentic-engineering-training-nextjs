@@ -43,6 +43,7 @@
   --error: color-mix(in srgb, #dc2626 70%, #19283a);
   --success: color-mix(in srgb, #15803d 70%, #19283a);
   --hue-purple: color-mix(in srgb, #9333ea 70%, #19283a);
+  --backdrop: color-mix(in srgb, #19283a 40%, transparent);
 }
 
 /* Night: every colour takes its one night tone, teal stays the accent. */
@@ -60,6 +61,7 @@
     --error: #f26969;
     --success: #4ade80;
     --hue-purple: #b97af1;
+    --backdrop: color-mix(in srgb, black 70%, transparent);
   }
 }
 

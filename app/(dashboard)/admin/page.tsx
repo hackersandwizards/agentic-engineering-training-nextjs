@@ -61,7 +61,7 @@ export default function AdminPage() {
         <DataTable
           columns={[
             { header: "Name" },
-            { header: "Email" },
+            { header: "Email", hideOnPhone: true },
             { header: "Role" },
             { header: "Status" },
             { header: "Actions", width: "80px" },
@@ -88,7 +88,9 @@ export default function AdminPage() {
                   )}
                 </Flex>
               </Table.Cell>
-              <Table.Cell color="fg.muted">{user.email}</Table.Cell>
+              <Table.Cell color="fg.muted" hideBelow="md">
+                {user.email}
+              </Table.Cell>
               <Table.Cell>
                 <Badge colorPalette={user.isSuperuser ? "purple" : "gray"}>
                   {user.isSuperuser ? "Admin" : "User"}
