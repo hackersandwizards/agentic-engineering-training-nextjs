@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import NextLink from "next/link";
+import { ProductMark } from "@/components/layout/ProductMark";
 import { useAuth } from "@/lib/client/useAuth";
 import { emailRules } from "@/lib/validation";
 
@@ -34,70 +35,72 @@ export default function LoginPage() {
   };
 
   return (
-    <Box>
-      <Stack gap={6}>
-        <Box textAlign="center">
-          <Heading as="h1" size="2xl">
-            Welcome back
-          </Heading>
-          <Text color="fg.muted" mt={2}>
-            Sign in to your account
-          </Text>
-        </Box>
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack gap={4}>
-            <Field.Root invalid={!!errors.email}>
-              <Field.Label>Email</Field.Label>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                {...register("email", emailRules)}
-              />
-              {errors.email && (
-                <Field.ErrorText>{errors.email.message}</Field.ErrorText>
-              )}
-            </Field.Root>
-
-            <Field.Root invalid={!!errors.password}>
-              <Field.Label>Password</Field.Label>
-              <Input
-                type="password"
-                placeholder="Enter your password"
-                {...register("password", {
-                  required: "Password is required",
-                })}
-              />
-              {errors.password && (
-                <Field.ErrorText>{errors.password.message}</Field.ErrorText>
-              )}
-            </Field.Root>
-
-            {error && (
-              <Text color="fg.error" fontSize="sm">
-                {error}
-              </Text>
-            )}
-
-            <Button
-              type="submit"
-              colorPalette="teal"
-              size="lg"
-              loading={isSubmitting || loginMutation.isPending}
-              width="full"
-            >
-              Sign in
-            </Button>
-          </Stack>
-        </form>
-
-        <Text textAlign="center" color="fg.muted">
-          Don&apos;t have an account?{" "}
-          <Link asChild color="teal.fg">
-            <NextLink href="/signup">Sign up</NextLink>
-          </Link>
+    <Stack gap={8}>
+      <ProductMark />
+      <Box>
+        <Heading as="h1" fontFamily="body" fontSize="2xl" fontWeight="semibold">
+          Sign in
+        </Heading>
+        <Text color="fg.muted" mt={2}>
+          Your contacts, in one place.
         </Text>
-      </Stack>
-    </Box>
+      </Box>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack gap={5}>
+          <Field.Root invalid={!!errors.email}>
+            <Field.Label>Email</Field.Label>
+            <Input
+              type="email"
+              size="lg"
+              autoComplete="username"
+              {...register("email", emailRules)}
+            />
+            {errors.email && (
+              <Field.ErrorText>{errors.email.message}</Field.ErrorText>
+            )}
+          </Field.Root>
+
+          <Field.Root invalid={!!errors.password}>
+            <Field.Label>Password</Field.Label>
+            <Input
+              type="password"
+              size="lg"
+              autoComplete="current-password"
+              {...register("password", {
+                required: "Password is required",
+              })}
+            />
+            {errors.password && (
+              <Field.ErrorText>{errors.password.message}</Field.ErrorText>
+            )}
+          </Field.Root>
+
+          {error && (
+            <Text color="fg.error" fontSize="sm">
+              {error}
+            </Text>
+          )}
+
+          <Button
+            type="submit"
+            colorPalette="teal"
+            size="lg"
+            mt={1}
+            loading={isSubmitting || loginMutation.isPending}
+            width="full"
+          >
+            Sign in
+          </Button>
+        </Stack>
+      </form>
+
+      <Text color="fg.muted" fontSize="sm">
+        No account yet?{" "}
+        <Link asChild color="teal.fg" fontWeight="medium">
+          <NextLink href="/signup">Create one</NextLink>
+        </Link>
+      </Text>
+    </Stack>
   );
 }

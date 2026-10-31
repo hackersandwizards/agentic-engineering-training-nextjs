@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import NextLink from "next/link";
+import { ProductMark } from "@/components/layout/ProductMark";
 import { useAuth } from "@/lib/client/useAuth";
 import { emailRules, passwordRules } from "@/lib/validation";
 
@@ -41,95 +42,99 @@ export default function SignupPage() {
   };
 
   return (
-    <Box>
-      <Stack gap={6}>
-        <Box textAlign="center">
-          <Heading as="h1" size="2xl">
-            Create an account
-          </Heading>
-          <Text color="fg.muted" mt={2}>
-            Sign up to get started
-          </Text>
-        </Box>
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack gap={4}>
-            <Field.Root invalid={!!errors.full_name}>
-              <Field.Label>Full name</Field.Label>
-              <Input
-                type="text"
-                placeholder="Enter your full name"
-                {...register("full_name")}
-              />
-            </Field.Root>
-
-            <Field.Root invalid={!!errors.email}>
-              <Field.Label>Email</Field.Label>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                {...register("email", emailRules)}
-              />
-              {errors.email && (
-                <Field.ErrorText>{errors.email.message}</Field.ErrorText>
-              )}
-            </Field.Root>
-
-            <Field.Root invalid={!!errors.password}>
-              <Field.Label>Password</Field.Label>
-              <Input
-                type="password"
-                placeholder="Enter your password"
-                {...register("password", passwordRules)}
-              />
-              {errors.password && (
-                <Field.ErrorText>{errors.password.message}</Field.ErrorText>
-              )}
-            </Field.Root>
-
-            <Field.Root invalid={!!errors.confirmPassword}>
-              <Field.Label>Confirm password</Field.Label>
-              <Input
-                type="password"
-                placeholder="Confirm your password"
-                {...register("confirmPassword", {
-                  required: "Please confirm your password",
-                  validate: (value) =>
-                    value === getValues("password") || "Passwords do not match",
-                })}
-              />
-              {errors.confirmPassword && (
-                <Field.ErrorText>
-                  {errors.confirmPassword.message}
-                </Field.ErrorText>
-              )}
-            </Field.Root>
-
-            {error && (
-              <Text color="fg.error" fontSize="sm">
-                {error}
-              </Text>
-            )}
-
-            <Button
-              type="submit"
-              colorPalette="teal"
-              size="lg"
-              loading={isSubmitting || signUpMutation.isPending}
-              width="full"
-            >
-              Sign up
-            </Button>
-          </Stack>
-        </form>
-
-        <Text textAlign="center" color="fg.muted">
-          Already have an account?{" "}
-          <Link asChild color="teal.fg">
-            <NextLink href="/login">Sign in</NextLink>
-          </Link>
+    <Stack gap={8}>
+      <ProductMark />
+      <Box>
+        <Heading as="h1" fontFamily="body" fontSize="2xl" fontWeight="semibold">
+          Create an account
+        </Heading>
+        <Text color="fg.muted" mt={2}>
+          Your contacts, in one place.
         </Text>
-      </Stack>
-    </Box>
+      </Box>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack gap={5}>
+          <Field.Root invalid={!!errors.full_name}>
+            <Field.Label>Full name</Field.Label>
+            <Input
+              type="text"
+              size="lg"
+              autoComplete="name"
+              {...register("full_name")}
+            />
+          </Field.Root>
+
+          <Field.Root invalid={!!errors.email}>
+            <Field.Label>Email</Field.Label>
+            <Input
+              type="email"
+              size="lg"
+              autoComplete="username"
+              {...register("email", emailRules)}
+            />
+            {errors.email && (
+              <Field.ErrorText>{errors.email.message}</Field.ErrorText>
+            )}
+          </Field.Root>
+
+          <Field.Root invalid={!!errors.password}>
+            <Field.Label>Password</Field.Label>
+            <Input
+              type="password"
+              size="lg"
+              autoComplete="new-password"
+              {...register("password", passwordRules)}
+            />
+            {errors.password && (
+              <Field.ErrorText>{errors.password.message}</Field.ErrorText>
+            )}
+          </Field.Root>
+
+          <Field.Root invalid={!!errors.confirmPassword}>
+            <Field.Label>Confirm password</Field.Label>
+            <Input
+              type="password"
+              size="lg"
+              autoComplete="new-password"
+              {...register("confirmPassword", {
+                required: "Please confirm your password",
+                validate: (value) =>
+                  value === getValues("password") || "Passwords do not match",
+              })}
+            />
+            {errors.confirmPassword && (
+              <Field.ErrorText>
+                {errors.confirmPassword.message}
+              </Field.ErrorText>
+            )}
+          </Field.Root>
+
+          {error && (
+            <Text color="fg.error" fontSize="sm">
+              {error}
+            </Text>
+          )}
+
+          <Button
+            type="submit"
+            colorPalette="teal"
+            size="lg"
+            mt={1}
+            loading={isSubmitting || signUpMutation.isPending}
+            width="full"
+          >
+            Sign up
+          </Button>
+        </Stack>
+      </form>
+
+      <Text color="fg.muted" fontSize="sm">
+        Already have an account?{" "}
+        <Link asChild color="teal.fg" fontWeight="medium">
+          <NextLink href="/login">Sign in</NextLink>
+        </Link>
+      </Text>
+    </Stack>
   );
 }

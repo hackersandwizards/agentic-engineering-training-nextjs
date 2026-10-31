@@ -83,6 +83,7 @@ components/          layout, contact and admin dialogs, shared table and forms
 lib/                 Prisma client, JWT and password helpers, API helpers,
                      frontend API client and hooks (lib/client/)
 prisma/              schema, migrations, seed script
+public/              the hackers&wizards wordmark, light and dark
 test/                Vitest setup and the custom render
 e2e/                 Playwright specs
 ```

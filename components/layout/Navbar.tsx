@@ -1,6 +1,7 @@
 "use client";
 
-import { Box, Button, Flex, Menu, Portal, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Menu, Portal } from "@chakra-ui/react";
+import { ProductMark } from "@/components/layout/ProductMark";
 import { useAuth } from "@/lib/client/useAuth";
 
 export function Navbar() {
@@ -15,9 +16,7 @@ export function Navbar() {
         px={{ base: 4, md: 6 }}
         h="14"
       >
-        <Text fontFamily="heading" fontSize="lg" fontWeight="bold">
-          CRM
-        </Text>
+        <ProductMark />
 
         <Menu.Root>
           <Menu.Trigger asChild>
