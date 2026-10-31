@@ -2,7 +2,7 @@
   "name": "agentic-engineering-training-nextjs",
   "version": "0.1.0",
   "private": true,
-  "license": "PolyForm-Noncommercial-1.0.0",
+  "license": "SEE LICENSE IN LICENSE",
   "packageManager": "npm@12.2.1",
   "scripts": {
     "dev": "next dev",
