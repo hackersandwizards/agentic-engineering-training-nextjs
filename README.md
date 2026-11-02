@@ -7,14 +7,14 @@ Form, Prisma 7 on SQLite and TypeScript 6 in strict mode.
 
 ## Run it
 
-You need Node.js 22.22, 24.15, or 26 and newer, the range every dependency
-accepts (checked on 2026-10-31 with Node 26 and npm 12). The repo uses npm, and
+You need Node.js 22 (22.22.2 or newer), 24 (24.15 or newer) or 26, the range
+every dependency accepts (checked on 2026-10-31 with Node 26 and npm 12). The repo uses npm, and
 `package-lock.json` is its lockfile.
 
 ```bash
 npm install                                  # dependencies
 npm run db:migrate && npx prisma generate    # SQLite schema and Prisma client
-npm run db:seed                              # the three users below
+npm run db:seed                              # the three users below and their contacts
 npm run dev                                  # http://localhost:3000
 ```
 
@@ -28,7 +28,8 @@ the committed migration, and `prisma generate` writes the client that
 | alice@example.com | AlicePassword123 | User      |
 | bob@example.com   | BobPassword123   | User      |
 
-`npm run db:reset` drops the database, migrates and seeds it again. The
+`npm run db:reset` drops the database and migrates it again; run
+`npm run db:seed` after it to get the users back. The
 committed `.env` holds the database path, a development-only JWT secret and the
 seeded superuser. Never reuse it for a real deployment.
 
@@ -44,7 +45,8 @@ npm run test           # Vitest, single run
 ```
 
 `npm run test:e2e` runs Playwright: it builds the app, serves it and runs
-`e2e/` in Chromium. On a fresh machine, install the browser first with
+`e2e/` in Chromium. If something already answers on port 3000, such as
+`npm run dev`, Playwright tests that server instead. On a fresh machine, install the browser first with
 `npx playwright install chromium`.
 
 The test harness is set up, but the specs come with the exercises. Until you add
@@ -65,8 +67,9 @@ tests found", and both still pass (exit code 0).
    npm run db:migrate && npm run db:seed && npm run test:e2e)
   ```
 
-  The parentheses keep the variable inside that one run, so a later
-  `npm run dev` still uses `dev.db`.
+  Stop `npm run dev` first, or Playwright tests it against `dev.db`. The
+  parentheses keep the variable inside that one run, so a later `npm run dev`
+  still uses `dev.db`.
 
 Every script is in `package.json`. Dependencies are pinned exactly, and `.npmrc`
 keeps new ones pinned.
@@ -79,6 +82,7 @@ app/(dashboard)/     contacts, admin and settings pages (logged in)
 app/api/v1/          REST API routes
 app/brand.css        colours, fonts, light and dark mode (Chakra reads them in
                      app/providers.tsx)
+proxy.ts             sends a visitor without a token to /login
 components/          layout, contact and admin dialogs, shared table and forms
 lib/                 Prisma client, JWT and password helpers, API helpers,
                      frontend API client and hooks (lib/client/)
@@ -86,6 +90,9 @@ prisma/              schema, migrations, seed script
 public/              the hackers&wizards wordmark, light and dark
 test/                Vitest setup and the custom render
 e2e/                 Playwright specs
+.claude/             agent settings, empty agents/, skills/ and workflows/
+                     for the exercises
+.mcp.json            Chrome DevTools MCP server, headless Chrome for Testing
 ```
 
 ## REST API
