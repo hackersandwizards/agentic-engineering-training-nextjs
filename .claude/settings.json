@@ -12,10 +12,14 @@
   "skillOverrides": {
     "agent-feedback": "off",
     "architecture-principles": "off",
+    "blind-review": "off",
     "claude-accounts": "off",
     "delegation": "off",
+    "dependency-updates": "off",
     "engineering": "off",
+    "parallel-session": "off",
     "polish": "off",
+    "schedules": "off",
     "shell-tools": "off",
     "voice": "off"
   }
