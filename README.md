@@ -1,5 +1,7 @@
 # CRM Training Application (Next.js + React)
 
+> **Archived.** This was h&w's first practice codebase. Trainings now use [agentic-engineering-for-developers](https://github.com/hackersandwizards/agentic-engineering-for-developers). This repository stays readable for the decks that link it.
+
 A small CRM to practise agentic engineering on: login and signup, contacts,
 user administration for a superuser, profile settings and a REST API. Built
 with Next.js 16 (App Router), React 19, Chakra UI 3, TanStack Query, React Hook
